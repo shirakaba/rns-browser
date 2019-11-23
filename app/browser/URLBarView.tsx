@@ -90,6 +90,16 @@ class MenuButton extends React.Component<{}, {}> {
 }
 
 export class URLBarView extends React.Component<Props, State>{
+    constructor(props: Props){
+        super(props);
+        
+        this.state = {
+            inOverlayMode: false,
+            toolbarIsShowing: true,
+            location: "https://www.birchlabs.co.uk",
+        };
+    }
+
     render(){
         const {} = this.props;
         const { inOverlayMode, toolbarIsShowing } = this.state;
