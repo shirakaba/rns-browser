@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView } from "react-nativescript";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
 import { Header } from "./Header";
@@ -61,7 +61,11 @@ class WebViewContainerBackdrop extends React.Component<{}, {}> {
 
         return (
             // UIView()
-            <$StackLayout/>
+            <$StackLayout
+                backgroundColor={"purple"}
+                width={{ value: 100, unit: "%"}}
+                height={{ value: 100, unit: "%" }}
+            />
         );
     }
 }
@@ -137,15 +141,31 @@ class OverlayBackground extends React.Component<{}, {}> {
 export class BrowserViewController extends React.Component<Props, State> {
 
     render(){
+
+        // Visibility of certain components changes when switching app (if in private browsing mode)
+        // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
+
         return (
-            <$StackLayout>
-                <WebViewContainerBackdrop/>
+            <$StackLayout width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}>
+                
 
-                <WebViewContainer>
-                    <$WebView width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}/>
-                </WebViewContainer>
+                    <$AbsoluteLayout
+                        width={{ value: 500, unit: "px" }} height={{ value: 500, unit: "px" }} 
 
-                <NotchAreaCover/>
+                    >
+                        <WebViewContainerBackdrop/>
+                        {/* <WebViewContainer>
+                        </WebViewContainer> */}
+                        <$WebView
+                            width={{ value: 100, unit: "%" }}
+                            height={{ value: 100, unit: "%" }}
+                            src={"https://www.birchlabs.co.uk"}
+                        />
+                    </$AbsoluteLayout>
+
+
+
+                {/* <NotchAreaCover/>
 
                 <TopTouchArea/>
 
@@ -153,7 +173,7 @@ export class BrowserViewController extends React.Component<Props, State> {
 
                 <Footer showToolbar={true}/>
 
-                <OverlayBackground/>
+                <OverlayBackground/> */}
             </$StackLayout>
         );
     }
