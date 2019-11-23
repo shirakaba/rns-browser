@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout, $FlexboxLayout } from "react-nativescript";
 import { StackLayoutProps, ButtonProps } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
@@ -174,28 +174,19 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$DockLayout
+                <$FlexboxLayout
+                    flexDirection={"column"}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%" }}
-                    stretchLastChild={true}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
-                    <TopTouchArea
-                        dock={"top"}
-                    />
-
-                    {/* <NotchAreaCover/> */}
-
-
-                    {/* <AlertStackView/> */}
-
-
-                    {/* <OverlayBackground/> */}
-
-                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer dock={"bottom"} showToolbar={true}/>
+                    <TopTouchArea/>
 
                     <$GridLayout
+                        width={{ value: 100, unit: "%"}}
+                        height={{ value: 100, unit: "%" }}
                         rows={[new ItemSpec(1, "star")]}
                         columns={[new ItemSpec(1, "star")]}
                     >
@@ -208,7 +199,19 @@ export class BrowserViewController extends React.Component<Props, State> {
                             />
                         </WebViewContainer>
                     </$GridLayout>
-                </$DockLayout>
+
+                    {/* <NotchAreaCover/> */}
+
+
+                    {/* <AlertStackView/> */}
+
+
+                    {/* <OverlayBackground/> */}
+
+                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
+                    <Footer showToolbar={true}/>
+
+                </$FlexboxLayout>
             </$StackLayout>
         );
     }
