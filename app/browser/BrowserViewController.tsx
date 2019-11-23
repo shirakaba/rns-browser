@@ -174,20 +174,12 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$GridLayout
-                    rows={[
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "star"),
-                        new ItemSpec(1, "auto"),
-                    ]}
-                    columns={[new ItemSpec(1, "star")]}
+                <$StackLayout
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%" }}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                     <TopTouchArea
-                        row={0}
-                        col={0}
                     />
 
                     {/* <NotchAreaCover/> */}
@@ -199,8 +191,6 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     <$GridLayout
-                        row={1}
-                        col={0}
                         width={{ value: 100, unit: "%"}}
                         height={{ value: 100, unit: "%" }}
                         rows={[new ItemSpec(1, "star")]}
@@ -217,8 +207,8 @@ export class BrowserViewController extends React.Component<Props, State> {
                     </$GridLayout>
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={2} col={0} showToolbar={true}/>
-                </$GridLayout>
+                    <Footer showToolbar={true}/>
+                </$StackLayout>
             </$StackLayout>
         );
     }
