@@ -122,7 +122,7 @@ class Footer extends React.Component<{ showToolbar: boolean, }, {}> {
 
         if(showToolbar){
             return (
-                <$StackLayout>
+                <$StackLayout width={{ value: 100, unit: "%"}}>
                     <TabToolbar/>
                 </$StackLayout>
             );
@@ -164,8 +164,11 @@ export class BrowserViewController extends React.Component<Props, State> {
         // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
 
         return (
-            <$StackLayout width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}>
-                {/* Intended to be as wide as self.view, so width should exit the safe area. */}
+            <$StackLayout
+                width={{ value: 100, unit: "%"}}
+                height={{ value: 100, unit: "%" }}
+            >
+                {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                 <TopTouchArea/>
                 
                 {/* [WORKAROUND] NativeScript can't accept a WebView being at 100% width & 100% height inside an AbsoluteView, even if
@@ -190,6 +193,7 @@ export class BrowserViewController extends React.Component<Props, State> {
 
                 {/* <AlertStackView/> */}
 
+                {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
                 {/* <Footer showToolbar={true}/> */}
 
                 {/* <OverlayBackground/> */}
