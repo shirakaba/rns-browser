@@ -1,10 +1,11 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout } from "react-nativescript";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
 import { Header } from "./Header";
 import { TabToolbar } from "./TabToolbar";
+import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 
 interface Props {
 
@@ -62,8 +63,11 @@ class WebViewContainerBackdrop extends React.Component<{}, {}> {
         return (
             // UIView()
             <$StackLayout
-                backgroundColor={"purple"}
-                width={{ value: 100, unit: "%"}}
+                row={0}
+                col={0}
+                // opacity={0.5}
+                // backgroundColor={"purple"}
+                width={{ value: 100, unit: "%" }}
                 height={{ value: 100, unit: "%" }}
             />
         );
@@ -76,7 +80,12 @@ class WebViewContainer extends React.Component<{}, {}> {
 
         return (
             // UIView()
-            <$StackLayout width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}>
+            <$StackLayout
+                row={0}
+                col={0}
+                width={{ value: 100, unit: "%" }}
+                height={{ value: 100, unit: "%" }}
+            >
                 {children}
             </$StackLayout>
         );
@@ -148,20 +157,20 @@ export class BrowserViewController extends React.Component<Props, State> {
         return (
             <$StackLayout width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}>
                 
-
-                    <$AbsoluteLayout
-                        width={{ value: 500, unit: "px" }} height={{ value: 500, unit: "px" }} 
-
-                    >
+                    {/* [WORKAROUND] NativeScript can't accept a WebView being at 100% width & 100% height inside an AbsoluteView, even if
+                      * that AbsoluteView has fixed dimensions, so we'll use a GridLayout instead to bind these two to the same width and
+                      * height constraints. */}
+                    <$GridLayout rows={[new ItemSpec(1, "star")]} columns={[new ItemSpec(1, "star")]}>
                         <WebViewContainerBackdrop/>
-                        {/* <WebViewContainer>
-                        </WebViewContainer> */}
-                        <$WebView
-                            width={{ value: 100, unit: "%" }}
-                            height={{ value: 100, unit: "%" }}
-                            src={"https://www.birchlabs.co.uk"}
-                        />
-                    </$AbsoluteLayout>
+                        <WebViewContainer>
+                            <$WebView
+                                width={{ value: 100, unit: "%" }}
+                                height={{ value: 100, unit: "%" }}
+                                src={"https://www.birchlabs.co.uk"}
+                            />
+                        </WebViewContainer>
+                    </$GridLayout>
+
 
 
 
