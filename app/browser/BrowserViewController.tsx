@@ -8,12 +8,10 @@ import { Header } from "./Header";
 import { TabToolbar } from "./TabToolbar";
 import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 
-interface Props {
-
-}
-
-interface State {
-
+const BrowserViewControllerUX = {
+    ShowHeaderTapAreaHeight: 32,
+    BookmarkStarAnimationDuration: 0.5,
+    BookmarkStarAnimationOffset: 80,
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L128
@@ -98,7 +96,10 @@ class TopTouchArea extends React.Component<{}, {}> {
         const {} = this.props;
 
         return (
-            <$Button/>
+            <$Button
+                width={{ value: 100, unit: "%"}}
+                height={{ value: BrowserViewControllerUX.ShowHeaderTapAreaHeight, unit: "px" }}
+            />
         );
     }
 }
@@ -147,6 +148,14 @@ class OverlayBackground extends React.Component<{}, {}> {
     }
 }
 
+interface Props {
+
+}
+
+interface State {
+
+}
+
 export class BrowserViewController extends React.Component<Props, State> {
 
     render(){
@@ -156,33 +165,34 @@ export class BrowserViewController extends React.Component<Props, State> {
 
         return (
             <$StackLayout width={{ value: 100, unit: "%"}} height={{ value: 100, unit: "%" }}>
-                
-                    {/* [WORKAROUND] NativeScript can't accept a WebView being at 100% width & 100% height inside an AbsoluteView, even if
-                      * that AbsoluteView has fixed dimensions, so we'll use a GridLayout instead to bind these two to the same width and
-                      * height constraints. */}
-                    <$GridLayout rows={[new ItemSpec(1, "star")]} columns={[new ItemSpec(1, "star")]}>
-                        <WebViewContainerBackdrop row={0} col={0}/>
-                        <WebViewContainer row={0} col={0}>
-                            <$WebView
-                                width={{ value: 100, unit: "%" }}
-                                height={{ value: 100, unit: "%" }}
-                                src={"https://www.birchlabs.co.uk"}
-                            />
-                        </WebViewContainer>
-                    </$GridLayout>
-
-
-
-
-                {/* <NotchAreaCover/>
-
+                {/* Intended to be as wide as self.view, so width should exit the safe area. */}
                 <TopTouchArea/>
+                
+                {/* [WORKAROUND] NativeScript can't accept a WebView being at 100% width & 100% height inside an AbsoluteView, even if
+                    * that AbsoluteView has fixed dimensions, so we'll use a GridLayout instead to bind these two to the same width and
+                    * height constraints. */}
+                <$GridLayout rows={[new ItemSpec(1, "star")]} columns={[new ItemSpec(1, "star")]}>
+                    <WebViewContainerBackdrop row={0} col={0}/>
+                    <WebViewContainer row={0} col={0}>
+                        <$WebView
+                            width={{ value: 100, unit: "%" }}
+                            height={{ value: 100, unit: "%" }}
+                            src={"https://www.birchlabs.co.uk"}
+                        />
+                    </WebViewContainer>
+                </$GridLayout>
 
-                <AlertStackView/>
 
-                <Footer showToolbar={true}/>
 
-                <OverlayBackground/> */}
+
+                {/* <NotchAreaCover/> */}
+
+
+                {/* <AlertStackView/> */}
+
+                {/* <Footer showToolbar={true}/> */}
+
+                {/* <OverlayBackground/> */}
             </$StackLayout>
         );
     }
