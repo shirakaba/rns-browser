@@ -101,7 +101,7 @@ class TopTouchArea extends React.Component<ButtonComponentProps, {}> {
             <$Button
                 backgroundColor={"red"}
                 width={{ value: 100, unit: "%"}}
-                height={{ value: BrowserViewControllerUX.ShowHeaderTapAreaHeight, unit: "px" }}
+                height={{ value: BrowserViewControllerUX.ShowHeaderTapAreaHeight, unit: "dip" }}
                 {...rest}
             />
         );
