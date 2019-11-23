@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout } from "react-nativescript";
 import { StackLayoutProps, ButtonProps } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
@@ -174,35 +174,15 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$GridLayout
-                    rows={[
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "star"),
-                        new ItemSpec(1, "auto"),
-                    ]}
-                    columns={[new ItemSpec(1, "star")]}
+                <$DockLayout
+                    width={{ value: 100, unit: "%"}}
+                    height={{ value: 100, unit: "%" }}
+                    stretchLastChild={true}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                     <TopTouchArea
-                        row={0}
-                        col={0}
+                        dock={"top"}
                     />
-
-                    <$GridLayout
-                        rows={[new ItemSpec(1, "star")]}
-                        columns={[new ItemSpec(1, "star")]}
-                        row={1}
-                        col={0}
-                    >
-                        <WebViewContainerBackdrop row={0} col={0}/>
-                        <WebViewContainer row={0} col={0}>
-                            <$WebView
-                                width={{ value: 100, unit: "%" }}
-                                height={{ value: 100, unit: "%" }}
-                                src={"https://www.birchlabs.co.uk"}
-                            />
-                        </WebViewContainer>
-                    </$GridLayout>
 
                     {/* <NotchAreaCover/> */}
 
@@ -213,8 +193,22 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={2} col={0} showToolbar={true}/>
-                </$GridLayout>
+                    <Footer dock={"bottom"} showToolbar={true}/>
+
+                    <$GridLayout
+                        rows={[new ItemSpec(1, "star")]}
+                        columns={[new ItemSpec(1, "star")]}
+                    >
+                        <WebViewContainerBackdrop row={0} col={0}/>
+                        <WebViewContainer row={0} col={0}>
+                            <$WebView
+                                width={{ value: 100, unit: "%" }}
+                                height={{ value: 100, unit: "%" }}
+                                src={"https://www.birchlabs.co.uk"}
+                            />
+                        </WebViewContainer>
+                    </$GridLayout>
+                </$DockLayout>
             </$StackLayout>
         );
     }
