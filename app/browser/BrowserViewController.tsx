@@ -111,10 +111,10 @@ class TopTouchArea extends React.Component<ButtonComponentProps, {}> {
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L70
 class AlertStackView extends React.Component<StackLayoutComponentProps, {}> {
     render(){
-        const {} = this.props;
+        const { children, ...rest } = this.props;
 
         return (
-            <$StackLayout/>
+            <$StackLayout {...rest}/>
         );
     }
 }
@@ -124,11 +124,11 @@ type FooterProps = { showToolbar: boolean, } & StackLayoutComponentProps;
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L103
 class Footer extends React.Component<FooterProps, {}> {
     render(){
-        const { showToolbar, children } = this.props;
+        const { showToolbar, children, ...rest } = this.props;
 
         if(showToolbar){
             return (
-                <$StackLayout width={{ value: 100, unit: "%"}}>
+                <$StackLayout width={{ value: 100, unit: "%"}} {...rest}>
                     <TabToolbar/>
                 </$StackLayout>
             );
@@ -174,12 +174,13 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$StackLayout
+                <$DockLayout
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%" }}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                     <TopTouchArea
+                        dock={"top"}
                     />
 
                     {/* <NotchAreaCover/> */}
@@ -189,6 +190,10 @@ export class BrowserViewController extends React.Component<Props, State> {
 
 
                     {/* <OverlayBackground/> */}
+
+                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
+                    <Footer dock={"bottom"} showToolbar={true} backgroundColor={"purple"}/>
+
 
                     <$GridLayout
                         width={{ value: 100, unit: "%"}}
@@ -206,9 +211,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                         </WebViewContainer>
                     </$GridLayout>
 
-                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer showToolbar={true}/>
-                </$StackLayout>
+                </$DockLayout>
             </$StackLayout>
         );
     }
