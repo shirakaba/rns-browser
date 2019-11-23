@@ -52,7 +52,7 @@ class CancelButton extends React.Component<{}, {}>{
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift#L108
-export class LocationContainer extends React.Component<{}, {}>{
+class LocationContainer extends React.Component<{}, {}>{
     render(){
         return (
             <TabLocationContainerView/>
