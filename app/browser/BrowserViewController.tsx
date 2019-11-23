@@ -174,15 +174,24 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$FlexboxLayout
-                    flexDirection={"column"}
+                <$DockLayout
+                    stretchLastChild={true}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%" }}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
-                    <TopTouchArea/>
+                    <TopTouchArea dock={"top"}/>
+
+                    {/* <NotchAreaCover/> */}
+
+
+                    {/* <AlertStackView/> */}
+
+
+                    {/* <OverlayBackground/> */}
+
+                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
+                    <Footer dock={"bottom"} showToolbar={true}/>
 
                     <$GridLayout
                         width={{ value: 100, unit: "%"}}
@@ -199,19 +208,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                             />
                         </WebViewContainer>
                     </$GridLayout>
-
-                    {/* <NotchAreaCover/> */}
-
-
-                    {/* <AlertStackView/> */}
-
-
-                    {/* <OverlayBackground/> */}
-
-                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer showToolbar={true}/>
-
-                </$FlexboxLayout>
+                </$DockLayout>
             </$StackLayout>
         );
     }
