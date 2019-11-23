@@ -1,6 +1,7 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout } from "react-nativescript";
+import { StackLayoutProps } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
 import { Header } from "./Header";
@@ -56,35 +57,34 @@ class NotchAreaCover extends React.Component<{}, {}> {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L110
-class WebViewContainerBackdrop extends React.Component<{}, {}> {
+class WebViewContainerBackdrop extends React.Component<Partial<StackLayoutProps>, {}> {
     render(){
-        const {} = this.props;
+        const { children, ...rest } = this.props;
 
         return (
             // UIView()
             <$StackLayout
-                row={0}
-                col={0}
                 // opacity={0.5}
                 // backgroundColor={"purple"}
                 width={{ value: 100, unit: "%" }}
                 height={{ value: 100, unit: "%" }}
+                {...rest}
             />
         );
     }
 }
 
-class WebViewContainer extends React.Component<{}, {}> {
+
+class WebViewContainer extends React.Component<Partial<StackLayoutProps>, {}> {
     render(){
-        const { children } = this.props;
+        const { children, ...rest } = this.props;
 
         return (
             // UIView()
             <$StackLayout
-                row={0}
-                col={0}
                 width={{ value: 100, unit: "%" }}
                 height={{ value: 100, unit: "%" }}
+                {...rest}
             >
                 {children}
             </$StackLayout>
@@ -161,8 +161,8 @@ export class BrowserViewController extends React.Component<Props, State> {
                       * that AbsoluteView has fixed dimensions, so we'll use a GridLayout instead to bind these two to the same width and
                       * height constraints. */}
                     <$GridLayout rows={[new ItemSpec(1, "star")]} columns={[new ItemSpec(1, "star")]}>
-                        <WebViewContainerBackdrop/>
-                        <WebViewContainer>
+                        <WebViewContainerBackdrop row={0} col={0}/>
+                        <WebViewContainer row={0} col={0}>
                             <$WebView
                                 width={{ value: 100, unit: "%" }}
                                 height={{ value: 100, unit: "%" }}
