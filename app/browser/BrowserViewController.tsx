@@ -199,9 +199,18 @@ export class BrowserViewController extends React.Component<Props, State> {
                     ]}
                     columns={[new ItemSpec(1, "star")]}
                 >
-                    {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
-                    <TopTouchArea row={0}/>
-                    <NotchAreaCover row={0}/>
+                    <$GridLayout
+                        row={0}
+                        width={{ value: 100, unit: "%"}}
+                        height={"auto"}
+                        rows={[new ItemSpec(1, "auto"),]}
+                        columns={[new ItemSpec(1, "star")]}
+                        backgroundColor={"orange"}
+                    >
+                        {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
+                        <TopTouchArea row={0}/>
+                        <NotchAreaCover row={0}/>
+                    </$GridLayout>
 
                     <$GridLayout
                         row={1}
