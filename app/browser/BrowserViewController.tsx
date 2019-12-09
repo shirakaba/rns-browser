@@ -187,28 +187,22 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%" }}
             >
-                <$DockLayout
+                <$GridLayout
                     width={{ value: 100, unit: "%"}}
-                    height={{ value: 100, unit: "%" }}
+                    height={{ value: 100, unit: "%"}}
+                    rows={[
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                    ]}
+                    columns={[new ItemSpec(1, "star")]}
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
-                    <TopTouchArea
-                        dock={"top"}
-                    />
-
+                    <TopTouchArea row={0}/>
                     {/* <NotchAreaCover/> */}
 
-
-                    {/* <AlertStackView/> */}
-
-
-                    {/* <OverlayBackground/> */}
-
-                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer dock={"bottom"} showToolbar={true} backgroundColor={"purple"}/>
-
-
                     <$GridLayout
+                        row={1}
                         width={{ value: 100, unit: "%"}}
                         height={{ value: 100, unit: "%" }}
                         rows={[new ItemSpec(1, "star")]}
@@ -224,7 +218,13 @@ export class BrowserViewController extends React.Component<Props, State> {
                         </WebViewContainer>
                     </$GridLayout>
 
-                </$DockLayout>
+                    {/* <AlertStackView/> */}
+
+                    {/* <OverlayBackground/> */}
+
+                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
+                    <Footer row={2} showToolbar={true} backgroundColor={"purple"}/>
+                </$GridLayout>
             </$StackLayout>
         );
     }
