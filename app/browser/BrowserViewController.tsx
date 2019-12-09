@@ -185,85 +185,68 @@ export class BrowserViewController extends React.Component<Props, State> {
         // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
 
         return (
-            <$StackLayout
+            <$GridLayout
                 width={{ value: 100, unit: "%"}}
-                height={{ value: 100, unit: "%" }}
+                height={{ value: 100, unit: "%"}}
+                rows={[new ItemSpec(1, "star"),]}
+                columns={[new ItemSpec(1, "star")]}
             >
+                {/* Layer 0 (bottom-most layer) */}
                 <$GridLayout
+                    row={0}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%"}}
-                    rows={[new ItemSpec(1, "star"),]}
+                    rows={[
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                    ]}
                     columns={[new ItemSpec(1, "star")]}
+                    // backgroundColor={"green"}
                 >
-                    {/* Layer 2 (top-most layer) */}
-                    <$GridLayout
-                        row={0}
-                        width={{ value: 100, unit: "%"}}
-                        height={{ value: 100, unit: "%"}}
-                        rows={[
-                            new ItemSpec(1, "auto"),
-                            new ItemSpec(1, "star"),
-                            new ItemSpec(1, "auto"),
-                        ]}
-                        columns={[new ItemSpec(1, "star")]}
-                    >
-                        <$GridLayout
-                            row={1}
-                            width={{ value: 100, unit: "%"}}
-                            height={{ value: 100, unit: "%" }}
-                            rows={[new ItemSpec(1, "star")]}
-                            columns={[new ItemSpec(1, "star")]}
-                        >
-                            <WebViewContainerBackdrop row={0} col={0}/>
-                            <WebViewContainer row={0} col={0}>
-                                <$WebView
-                                    width={{ value: 100, unit: "%" }}
-                                    height={{ value: 100, unit: "%" }}
-                                    src={"https://www.birchlabs.co.uk"}
-                                />
-                            </WebViewContainer>
-                        </$GridLayout>
-
-                        {/* <AlertStackView/> */}
-
-                        {/* <OverlayBackground/> */}
-
-                        {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                        <Footer row={2} showToolbar={true} backgroundColor={"purple"}/>
-                    </$GridLayout>
-
-                    {/* Layer 1 */}
-                    <$GridLayout
-                        row={0}
-                        width={{ value: 100, unit: "%"}}
-                        height={{ value: 100, unit: "%"}}
-                        rows={[
-                            new ItemSpec(1, "auto"),
-                            new ItemSpec(1, "star"),
-                            new ItemSpec(1, "auto"),
-                        ]}
-                        columns={[new ItemSpec(1, "star")]}
-                    >
-                        <NotchAreaCover row={0}/>
-                    </$GridLayout>
-
-                    {/* Layer 0 (bottom-most layer) */}
-                    <$GridLayout
-                        row={0}
-                        width={{ value: 100, unit: "%"}}
-                        height={{ value: 100, unit: "%"}}
-                        rows={[
-                            new ItemSpec(1, "auto"),
-                            new ItemSpec(1, "star"),
-                            new ItemSpec(1, "auto"),
-                        ]}
-                        columns={[new ItemSpec(1, "star")]}
-                    >
-                        {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
-                        <TopTouchArea row={0}/>
-                    </$GridLayout>
+                    {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
+                    <TopTouchArea row={0}/>
                 </$GridLayout>
-            </$StackLayout>
+
+                {/* Layer 1 (top-most layer) */}
+                <$GridLayout
+                    row={0}
+                    width={{ value: 100, unit: "%"}}
+                    height={{ value: 100, unit: "%"}}
+                    rows={[
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                    ]}
+                    columns={[new ItemSpec(1, "star")]}
+                    // backgroundColor={"pink"}
+                >
+                    <NotchAreaCover row={0}/>
+                    <$GridLayout
+                        row={1}
+                        width={{ value: 100, unit: "%"}}
+                        height={{ value: 100, unit: "%" }}
+                        rows={[new ItemSpec(1, "star")]}
+                        columns={[new ItemSpec(1, "star")]}
+                    >
+                        <WebViewContainerBackdrop row={0} col={0}/>
+                        <WebViewContainer row={0} col={0}>
+                            <$WebView
+                                width={{ value: 100, unit: "%" }}
+                                height={{ value: 100, unit: "%" }}
+                                src={"https://www.birchlabs.co.uk"}
+                            />
+                        </WebViewContainer>
+                    </$GridLayout>
+
+                    {/* <AlertStackView/> */}
+
+                    {/* <OverlayBackground/> */}
+
+                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
+                    <Footer row={2} showToolbar={true} backgroundColor={"purple"}/>
+                </$GridLayout>
+            </$GridLayout>
         );
     }
 }
