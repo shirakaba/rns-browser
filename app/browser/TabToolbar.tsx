@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
 
 interface Props {
@@ -54,14 +54,14 @@ export class TabToolbar extends React.Component<Props, State>{
 
     render(){
         return (
-            <$StackLayout orientation={"horizontal"}>
+            <$FlexboxLayout flexDirection={"row"} justifyContent={"space-around"} alignItems={"center"} width={"100%" as any} paddingTop={16}>
                 {/* actionButtons */}
                 <BackButton/>
                 <ForwardButton/>
                 <MenuButton/>
                 <SearchButton/>
                 <TabsButton/>
-            </$StackLayout>
+            </$FlexboxLayout>
         );
     }
 }

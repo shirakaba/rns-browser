@@ -14,7 +14,8 @@ export class ToolbarButton extends React.Component<Props, State>{
 
     render(){
         return (
-            <$Button/>
+            <$Button className="" width={{ value: 32, unit: "dip" }} height={{ value: 32, unit: "dip" }} backgroundColor="blue"/>
+            // <$Button/>
         );
     }
 }
