@@ -45,11 +45,13 @@ class UrlBarTopTabsContainer extends React.Component<{}, {}> {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
-class NotchAreaCover extends React.Component<{}, {}> {
+class NotchAreaCover extends React.Component<StackLayoutComponentProps, {}> {
     render(){
+        const { children, ...rest } = this.props;
+
         return (
             // UIVisualEffectView().contentView
-            <$StackLayout>
+            <$StackLayout {...rest}>
                 <Header/>
             </$StackLayout>
         );
@@ -199,7 +201,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                 >
                     {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                     <TopTouchArea row={0}/>
-                    {/* <NotchAreaCover/> */}
+                    <NotchAreaCover row={0}/>
 
                     <$GridLayout
                         row={1}
