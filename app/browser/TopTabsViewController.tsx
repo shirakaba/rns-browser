@@ -1,7 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout } from "react-nativescript";
-import { URLBarView } from "./URLBarView";
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TopTabsViewController.swift
 // Just a stub for now.

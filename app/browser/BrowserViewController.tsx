@@ -94,15 +94,28 @@ class WebViewContainer extends React.Component<StackLayoutComponentProps, {}> {
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L104
 class TopTouchArea extends React.Component<ButtonComponentProps, {}> {
+    constructor(props){
+        super(props);
+    }
+
+    private readonly onTap = (e) => {
+        console.log(`[TopTouchArea.onTap]`);
+    };
+    
     render(){
         const { children, ...rest } = this.props;
 
+        // A Button would be more semantic, but is restricted to the Safe Area.
+
         return (
-            <$Button
+            <$ContentView
+                {...rest}
+                onTap={this.onTap}
+                row={0}
                 backgroundColor={"red"}
+                className=""
                 width={{ value: 100, unit: "%"}}
                 height={{ value: BrowserViewControllerUX.ShowHeaderTapAreaHeight, unit: "dip" }}
-                {...rest}
             />
         );
     }
