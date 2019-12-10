@@ -192,38 +192,24 @@ export class BrowserViewController extends React.Component<Props, State> {
                 rows={[new ItemSpec(1, "star"),]}
                 columns={[new ItemSpec(1, "star")]}
             >
-                {/* Layer 0 (bottom-most layer) */}
+                {/* Layer 0 (top-most layer) */}
                 <$GridLayout
                     row={0}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%"}}
                     rows={[
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "star"),
-                        new ItemSpec(1, "auto"),
-                    ]}
-                    columns={[new ItemSpec(1, "star")]}
-                    // backgroundColor={"green"}
-                >
-                    <TopTouchArea row={0}/>
-                </$GridLayout>
-
-                {/* Layer 1 (top-most layer) */}
-                <$GridLayout
-                    row={0}
-                    width={{ value: 100, unit: "%"}}
-                    height={{ value: 100, unit: "%"}}
-                    rows={[
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "star"),
-                        new ItemSpec(1, "auto"),
+                        new ItemSpec(0, "pixel"), // Opaque, fixed-height status bar
+                        new ItemSpec(1, "auto"), // Retractable nav bar
+                        new ItemSpec(1, "star"), // full-height scroll view
+                        new ItemSpec(1, "auto"), // Retractable tool bar
                     ]}
                     columns={[new ItemSpec(1, "star")]}
                     // backgroundColor={"pink"}
                 >
-                    <NotchAreaCover row={0}/>
+                    <TopTouchArea row={0}/>
+                    <NotchAreaCover row={1}/>
                     <$GridLayout
-                        row={1}
+                        row={2}
                         width={{ value: 100, unit: "%"}}
                         height={{ value: 100, unit: "%" }}
                         rows={[new ItemSpec(1, "star")]}
@@ -250,7 +236,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={2} showToolbar={true} backgroundColor={"purple"}/>
+                    <Footer row={3} showToolbar={true} backgroundColor={"purple"}/>
                 </$GridLayout>
             </$GridLayout>
         );
