@@ -114,69 +114,65 @@ export class URLBarView extends React.Component<Props, State>{
         const { } = this.props;
         const { inOverlayMode, toolbarIsShowing } = this.state;
 
+        let stackContents: React.ReactNode;
+
         if(inOverlayMode){
             // i.e. URL bar's text field has been focused and the browser displays an overlay over the webpage.
-            return (
+            stackContents = (
                 <$FlexboxLayout
                     flexDirection={"row"}
                     justifyContent={"space-around"}
                     alignItems={"center"}
                     height={"auto"}
                     width={{ value: 100, unit: "%" }}
-                    paddingTop={16}
-                    flexWrap={"wrap"}
                 >
                     {/* AKA locationTextField */}
                     <ToolbarTextField/>
                     <CancelButton/>
-                    <GradientProgressBar
-                        width={{ value: 100, unit: "%" }}
-                    />
                 </$FlexboxLayout>
             );
-        }
-
-        if(toolbarIsShowing){
-            return (
+        } else if(toolbarIsShowing){
+            stackContents = (
                 <$FlexboxLayout
                     flexDirection={"row"}
                     justifyContent={"space-around"}
                     alignItems={"center"}
                     height={"auto"}
                     width={{ value: 100, unit: "%" }}
-                    paddingTop={16}
                     flexWrap={"wrap"}
                 >
                     <BackButton/>
                     <ForwardButton/>
                     <StopReloadButton loading={false}/>
-                    {/* AKA locationView */}
-                    {/* <TabLocationView/> */}
+                    {/* AKA locationView. */}
+                    <TabLocationView/>
                     <TabsButton/>
                     <MenuButton/>
-                    <GradientProgressBar
-                        width={{ value: 100, unit: "%" }}
-                    />
+                </$FlexboxLayout>
+            );
+        } else {
+            stackContents = (
+                <$FlexboxLayout
+                    flexDirection={"row"}
+                    justifyContent={"space-around"}
+                    alignItems={"center"}
+                    height={"auto"}
+                    width={{ value: 100, unit: "%" }}
+                    flexWrap={"wrap"}
+                >
+                    {/* AKA locationView. */}
+                    <TabLocationView/>
                 </$FlexboxLayout>
             );
         }
 
         return (
-            <$FlexboxLayout
-                flexDirection={"row"}
-                justifyContent={"space-around"}
-                alignItems={"center"}
-                height={"auto"}
-                width={{ value: 100, unit: "%" }}
-                paddingTop={16}
-                flexWrap={"wrap"}
-            >
-                {/* AKA locationView */}
-                <TabLocationView/>
+            <$StackLayout orientation={"vertical"}>
+                {stackContents}
                 <GradientProgressBar
                     width={{ value: 100, unit: "%" }}
                 />
-            </$FlexboxLayout>
+            </$StackLayout>
         );
     }
 }
