@@ -1,6 +1,7 @@
 import * as React from "react";
 import { WebView, ActionBar, StackLayout } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Progress, $Button } from "react-nativescript";
+import { ToolbarButton } from "~/browser/ToolbarButton";
 
 interface Props {
 
@@ -14,7 +15,7 @@ export class TabsButton extends React.Component<Props, State>{
 
     render(){
         return (
-            <$Button/>
+            <ToolbarButton text={"\uf009"}/>
         );
     }
 }
