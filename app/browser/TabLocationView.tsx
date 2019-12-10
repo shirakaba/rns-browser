@@ -84,36 +84,29 @@ export class TabLocationView extends React.Component<Props, State>{
 
     render(){
         return (
-            // self.view
-            <$StackLayout
-                // width={{ value: 100, unit: "%" }}
-                backgroundColor={"gold"}
+            /* self.contentView */
+            /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */
+            /* https://developer.apple.com/documentation/uikit/uistackview */
+            <$FlexboxLayout
+                flexDirection={"row"}
+                // May need to change to "stretch"
+                alignItems={"center"}
+                justifyContent={"space-around"}
+                flexWrap={"nowrap"}
             >
-                {/* self.contentView */}
+                {/* frontSpaceView */}
+                <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
-                {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
-                {/* https://developer.apple.com/documentation/uikit/uistackview */}
-                <$FlexboxLayout
-                    flexDirection={"row"}
-                    // May need to change to "stretch"
-                    alignItems={"center"}
-                    justifyContent={"space-around"}
-                    flexWrap={"nowrap"}
-                >
-                    {/* frontSpaceView */}
-                    <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
-
-                    {/* privacyIndicator */}
-                    <PrivacyIndicator/>
-                    
-                    {/* privacyIndicatorSeparator */}
-                    <$ContentView width={{ value: 3, unit: "dip" }}/>
-                    <LockImageView locked={true}/>
-                    {/* FIXME: width */}
-                    <UrlTextField />
-                    <PageOptionsButton/>
-                </$FlexboxLayout>
-            </$StackLayout>
+                {/* privacyIndicator */}
+                <PrivacyIndicator/>
+                
+                {/* privacyIndicatorSeparator */}
+                <$ContentView width={{ value: 3, unit: "dip" }}/>
+                <LockImageView locked={true}/>
+                {/* FIXME: width */}
+                <UrlTextField />
+                <PageOptionsButton/>
+            </$FlexboxLayout>
         );
     }
 }
