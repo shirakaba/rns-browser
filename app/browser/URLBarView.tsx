@@ -163,7 +163,7 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                 >
                     {/* AKA locationView. */}
-                    <TabLocationView/>
+                    <TabLocationView flexGrow={1}/>
                 </$FlexboxLayout>
             );
         }
