@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar, StackLayout } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout } from "react-nativescript";
 import { GradientProgressBar } from "../Widgets/GradientProgressBar";
 import { ToolbarButton } from "./ToolbarButton";
 import { TabsButton } from "~/Widgets/TabsButton";
@@ -111,42 +111,72 @@ export class URLBarView extends React.Component<Props, State>{
     }
 
     render(){
-        const {} = this.props;
+        const { } = this.props;
         const { inOverlayMode, toolbarIsShowing } = this.state;
 
         if(inOverlayMode){
             // i.e. URL bar's text field has been focused and the browser displays an overlay over the webpage.
             return (
-                <$StackLayout orientation={"horizontal"}>
+                <$FlexboxLayout
+                    flexDirection={"row"}
+                    justifyContent={"space-around"}
+                    alignItems={"center"}
+                    height={"auto"}
+                    width={{ value: 100, unit: "%" }}
+                    paddingTop={16}
+                    flexWrap={"wrap"}
+                >
                     {/* AKA locationTextField */}
                     <ToolbarTextField/>
                     <CancelButton/>
-                    <GradientProgressBar/>
-                </$StackLayout>
+                    <GradientProgressBar
+                        width={{ value: 100, unit: "%" }}
+                    />
+                </$FlexboxLayout>
             );
         }
 
         if(toolbarIsShowing){
             return (
-                <$StackLayout orientation={"horizontal"}>
+                <$FlexboxLayout
+                    flexDirection={"row"}
+                    justifyContent={"space-around"}
+                    alignItems={"center"}
+                    height={"auto"}
+                    width={{ value: 100, unit: "%" }}
+                    paddingTop={16}
+                    flexWrap={"wrap"}
+                >
                     <BackButton/>
                     <ForwardButton/>
                     <StopReloadButton loading={false}/>
                     {/* AKA locationView */}
-                    <TabLocationView/>
+                    {/* <TabLocationView/> */}
                     <TabsButton/>
                     <MenuButton/>
-                    <GradientProgressBar/>
-                </$StackLayout>
+                    <GradientProgressBar
+                        width={{ value: 100, unit: "%" }}
+                    />
+                </$FlexboxLayout>
             );
         }
 
         return (
-            <$StackLayout orientation={"horizontal"}>
+            <$FlexboxLayout
+                flexDirection={"row"}
+                justifyContent={"space-around"}
+                alignItems={"center"}
+                height={"auto"}
+                width={{ value: 100, unit: "%" }}
+                paddingTop={16}
+                flexWrap={"wrap"}
+            >
                 {/* AKA locationView */}
                 <TabLocationView/>
-                <GradientProgressBar/>
-            </$StackLayout>
+                <GradientProgressBar
+                    width={{ value: 100, unit: "%" }}
+                />
+            </$FlexboxLayout>
         );
     }
 }

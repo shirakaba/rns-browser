@@ -48,10 +48,10 @@ class UrlBarTopTabsContainer extends React.Component<{}, {}> {
 class NotchAreaCover extends React.Component<StackLayoutComponentProps, {}> {
     render(){
         const { children, ...rest } = this.props;
-
         return (
-            // UIVisualEffectView().contentView
-            <$StackLayout {...rest}>
+            <$StackLayout
+                width={{ value: 100, unit: "%"}} {...rest}
+            >
                 <Header/>
             </$StackLayout>
         );
