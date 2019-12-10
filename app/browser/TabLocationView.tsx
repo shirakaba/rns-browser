@@ -79,7 +79,10 @@ export class TabLocationView extends React.Component<Props, State>{
     render(){
         return (
             // self.view
-            <$StackLayout>
+            <$StackLayout
+                // width={{ value: 100, unit: "%" }}
+                backgroundColor={"gold"}
+            >
                 {/* self.contentView */}
 
                 {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
@@ -89,6 +92,7 @@ export class TabLocationView extends React.Component<Props, State>{
                     // May need to change to "stretch"
                     alignItems={"center"}
                     justifyContent={"space-around"}
+                    flexWrap={"nowrap"}
                 >
                     {/* frontSpaceView */}
                     <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>

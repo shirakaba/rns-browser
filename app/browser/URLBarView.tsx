@@ -142,7 +142,7 @@ export class URLBarView extends React.Component<Props, State>{
                     alignItems={"center"}
                     height={"auto"}
                     width={{ value: 100, unit: "%" }}
-                    flexWrap={"wrap"}
+                    flexWrap={"nowrap"}
                 >
                     <BackButton/>
                     <ForwardButton/>
@@ -161,7 +161,6 @@ export class URLBarView extends React.Component<Props, State>{
                     alignItems={"center"}
                     height={"auto"}
                     width={{ value: 100, unit: "%" }}
-                    flexWrap={"wrap"}
                 >
                     {/* AKA locationView. */}
                     <TabLocationView/>
