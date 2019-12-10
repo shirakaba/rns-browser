@@ -93,31 +93,26 @@ export class TabLocationView extends React.Component<Props, State>{
 
                 {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
                 {/* https://developer.apple.com/documentation/uikit/uistackview */}
-                <$GridLayout
-                    // width={{ value: 100, unit: "%" }}
-                    rows={[new ItemSpec(1, "star")]}
-                    columns={[
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "auto"),
-                        new ItemSpec(1, "star"),
-                        new ItemSpec(1, "auto"),
-                    ]}
+                <$FlexboxLayout
+                    flexDirection={"row"}
+                    // May need to change to "stretch"
+                    alignItems={"center"}
+                    justifyContent={"space-around"}
+                    flexWrap={"nowrap"}
                 >
                     {/* frontSpaceView */}
-                    <$ContentView row={0} col={0} width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
+                    <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
                     {/* privacyIndicator */}
-                    <PrivacyIndicator row={0} col={1}/>
+                    <PrivacyIndicator/>
                     
                     {/* privacyIndicatorSeparator */}
-                    <$ContentView row={0} col={2} width={{ value: 3, unit: "dip" }}/>
-                    <LockImageView row={0} col={3} locked={true}/>
+                    <$ContentView width={{ value: 3, unit: "dip" }}/>
+                    <LockImageView locked={true}/>
                     {/* FIXME: width */}
-                    <UrlTextField row={0} col={4}/>
-                    <PageOptionsButton row={0} col={5}/>
-                </$GridLayout>
+                    <UrlTextField />
+                    <PageOptionsButton/>
+                </$FlexboxLayout>
             </$StackLayout>
         );
     }
