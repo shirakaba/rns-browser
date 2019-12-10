@@ -1,6 +1,7 @@
 import * as React from "react";
 import { WebView, ActionBar, StackLayout } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $ContentView, $Image, $TextField, $Button } from "react-nativescript";
+import { ToolbarButton } from "~/browser/ToolbarButton";
 
 interface Props {
 
@@ -13,11 +14,12 @@ interface State {
 export class PrivacyIndicatorView extends React.Component<{}, {}> {
     render(){
         return (
-            <$StackLayout>
-                {/* stub for canvasView, which is that donut graph. */}
-                <$ContentView/>
-                <$Button/>
-            </$StackLayout>
+            <ToolbarButton text={"\uf1ce"}/>
+            // <$StackLayout>
+            //     {/* stub for canvasView, which is that donut graph. */}
+            //     <$ContentView/>
+            //     <$Button/>
+            // </$StackLayout>
         );
     }
 }

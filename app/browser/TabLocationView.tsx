@@ -3,6 +3,7 @@ import { WebView, ActionBar, StackLayout } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $ContentView, $Image, $TextField } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
 import { PrivacyIndicatorView } from "~/Views/PrivacyIndicatorView";
+import { TextFieldComponentProps } from "react-nativescript/dist/components/TextField";
 
 interface Props {
 
@@ -21,28 +22,35 @@ const TabLocationViewUX = {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L83
-class LockImageView extends React.Component<{}, {}> {
+class LockImageView extends React.Component<{ locked: boolean }, {}> {
     render(){
+        const { locked } = this.props;
+
         return (
-            <$Image/>
+            // <$Image/>
+            <ToolbarButton text={ locked ? "\uf023" : "\uf3c1" }/>
         );
     }
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L319
-class DisplayTextField extends React.Component<{}, {}> {
+class DisplayTextField extends React.Component<TextFieldComponentProps, {}> {
     render(){
+        const { ...rest } = this.props;
+
         return (
-            <$TextField/>
+            <$TextField {...rest}/>
         );
     }
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L62
-class UrlTextField extends React.Component<{}, {}> {
+class UrlTextField extends React.Component<TextFieldComponentProps, {}> {
     render(){
+        const { ...rest } = this.props;
+
         return (
-            <DisplayTextField/>
+            <DisplayTextField {...rest}/>
         );
     }
 }
@@ -76,17 +84,23 @@ export class TabLocationView extends React.Component<Props, State>{
 
                 {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
                 {/* https://developer.apple.com/documentation/uikit/uistackview */}
-                <$FlexboxLayout flexDirection={"row"} flexGrow={1} alignItems={"stretch"} justifyContent={"center"} >
+                <$FlexboxLayout
+                    flexDirection={"row"}
+                    // May need to change to "stretch"
+                    alignItems={"center"}
+                    justifyContent={"space-around"}
+                >
                     {/* frontSpaceView */}
-                    <$ContentView width={TabLocationViewUX.Spacing}/>
+                    <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
                     {/* privacyIndicator */}
                     <PrivacyIndicator/>
                     
                     {/* privacyIndicatorSeparator */}
-                    <$ContentView width={3}/>
-                    <LockImageView/>
-                    <UrlTextField/>
+                    <$ContentView width={{ value: 3, unit: "dip" }}/>
+                    <LockImageView locked={true}/>
+                    {/* FIXME: width */}
+                    <UrlTextField />
                     <PageOptionsButton/>
                 </$FlexboxLayout>
             </$StackLayout>
