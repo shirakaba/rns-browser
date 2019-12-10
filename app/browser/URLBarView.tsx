@@ -148,7 +148,7 @@ export class URLBarView extends React.Component<Props, State>{
                     <ForwardButton/>
                     <StopReloadButton loading={false}/>
                     {/* AKA locationView. */}
-                    <TabLocationView/>
+                    <TabLocationView flexGrow={1}/>
                     <TabsButton/>
                     <MenuButton/>
                 </$FlexboxLayout>

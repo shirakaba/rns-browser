@@ -6,6 +6,7 @@ import { PrivacyIndicatorView } from "~/Views/PrivacyIndicatorView";
 import { TextFieldComponentProps } from "react-nativescript/dist/components/TextField";
 import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
+import { FlexboxLayoutComponentProps } from "react-nativescript/dist/components/FlexboxLayout";
 
 interface Props {
 
@@ -80,9 +81,11 @@ class PrivacyIndicator extends React.Component<{} & ButtonComponentProps, {}> {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift
-export class TabLocationView extends React.Component<Props, State>{
+export class TabLocationView extends React.Component<Props & FlexboxLayoutComponentProps, State>{
 
     render(){
+        const { ...rest } = this.props;
+
         return (
             /* self.contentView */
             /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */
@@ -93,6 +96,7 @@ export class TabLocationView extends React.Component<Props, State>{
                 alignItems={"center"}
                 justifyContent={"space-around"}
                 flexWrap={"nowrap"}
+                {...rest}
             >
                 {/* frontSpaceView */}
                 <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
@@ -104,7 +108,7 @@ export class TabLocationView extends React.Component<Props, State>{
                 <$ContentView width={{ value: 3, unit: "dip" }}/>
                 <LockImageView locked={true}/>
                 {/* FIXME: width */}
-                <UrlTextField />
+                <UrlTextField flexGrow={1}/>
                 <PageOptionsButton/>
             </$FlexboxLayout>
         );
