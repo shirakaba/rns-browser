@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WebView, ActionBar, StackLayout } from "@nativescript/core";
+import { WebView, ActionBar, StackLayout, Color } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Progress, $Button, $FormattedString, $Span } from "react-nativescript";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 
@@ -15,17 +15,24 @@ export class ToolbarButton extends React.Component<Props & ButtonComponentProps,
 
     render(){
         const { children, text, ...rest } = this.props;
+        const bgColour: string = "gray";
+        const textColour: string = "white";
 
         return (
             <$Button
                 className=""
                 width={{ value: 40, unit: "dip" }}
                 height={{ value: 40, unit: "dip" }}
-                backgroundColor="blue"
+                backgroundColor={bgColour}
                 {...rest}
             >
                 <$FormattedString>
-                    <$Span fontFamily="FontAwesome" text={text}/>
+                    <$Span
+                        color={new Color(textColour)}
+                        backgroundColor={new Color(bgColour)}
+                        fontFamily="FontAwesome"
+                        text={text}
+                    />
                 </$FormattedString>
             </$Button>
         );

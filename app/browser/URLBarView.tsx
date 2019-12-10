@@ -63,28 +63,38 @@ class LocationContainer extends React.Component<{}, {}>{
 class BackButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton/>
+            <ToolbarButton text={"\uf053"}/>
         );
     }
 }
 class ForwardButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton/>
+            <ToolbarButton text={"\uf054"}/>
         );
     }
 }
-class StopReloadButton extends React.Component<{}, {}> {
+class StopReloadButton extends React.Component<{ loading: boolean }, {}> {
     render(){
+        const { loading } = this.props;
+
         return (
-            <ToolbarButton/>
+            <ToolbarButton
+                text={
+                    loading ?
+                    // Stop (cross symbol)
+                    "\uf00d" :
+                    // Reload (redo symbol)
+                    "\uf01e"
+                }
+            />
         );
     }
 }
 class MenuButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton/>
+            <ToolbarButton text={"\uf141"}/>
         );
     }
 }
@@ -121,7 +131,7 @@ export class URLBarView extends React.Component<Props, State>{
                 <$StackLayout orientation={"horizontal"}>
                     <BackButton/>
                     <ForwardButton/>
-                    <StopReloadButton/>
+                    <StopReloadButton loading={false}/>
                     {/* AKA locationView */}
                     <TabLocationView/>
                     <TabsButton/>
