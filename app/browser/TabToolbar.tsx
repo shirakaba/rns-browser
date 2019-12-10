@@ -16,35 +16,35 @@ interface State {
 class BackButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf135"}/>
+            <ToolbarButton text={"\uf053"}/>
         );
     }
 }
 class ForwardButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf135"}/>
+            <ToolbarButton text={"\uf054"}/>
         );
     }
 }
 class MenuButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf135"}/>
+            <ToolbarButton text={"\uf142"}/>
         );
     }
 }
 class SearchButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf135"}/>
+            <ToolbarButton text={"\uf002"}/>
         );
     }
 }
 class TabsButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf135"}/>
+            <ToolbarButton text={"\uf009"}/>
         );
     }
 }
