@@ -11,7 +11,7 @@ import { StackLayoutComponentProps } from "react-nativescript/dist/components/St
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 
 const BrowserViewControllerUX = {
-    ShowHeaderTapAreaHeight: 32,
+    ShowHeaderTapAreaHeight: 0,
     BookmarkStarAnimationDuration: 0.5,
     BookmarkStarAnimationOffset: 80,
 }
@@ -95,11 +95,11 @@ class WebViewContainer extends React.Component<StackLayoutComponentProps, {}> {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L104
+/**
+ * TopTouchArea serves as an opaque status bar that can be tapped to scroll
+ * back to the top of any scrollview that is made its subordinate in some way.
+ */
 class TopTouchArea extends React.Component<ButtonComponentProps, {}> {
-    constructor(props){
-        super(props);
-    }
-
     private readonly onTap = (e) => {
         console.log(`[TopTouchArea.onTap]`);
     };
@@ -114,10 +114,11 @@ class TopTouchArea extends React.Component<ButtonComponentProps, {}> {
                 {...rest}
                 onTap={this.onTap}
                 row={0}
+                // The trick here is that this background colour overflows beyond the safe area.
                 backgroundColor={"red"}
                 className=""
                 width={{ value: 100, unit: "%"}}
-                height={{ value: BrowserViewControllerUX.ShowHeaderTapAreaHeight, unit: "dip" }}
+                height={{ value: 0, unit: "dip" }}
             />
         );
     }
@@ -204,7 +205,6 @@ export class BrowserViewController extends React.Component<Props, State> {
                     columns={[new ItemSpec(1, "star")]}
                     // backgroundColor={"green"}
                 >
-                    {/* Intended to anchor to the left and right of self.view, so should exit the safe area width-ways. */}
                     <TopTouchArea row={0}/>
                 </$GridLayout>
 
@@ -232,6 +232,12 @@ export class BrowserViewController extends React.Component<Props, State> {
                         <WebViewContainerBackdrop row={0} col={0}/>
                         <WebViewContainer row={0} col={0}>
                             <$WebView
+                                // onTouch={() => {
+                                //     console.log(`WebView touched`);
+                                // }}
+                                onPan={(e) => {
+                                    console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
+                                }}
                                 width={{ value: 100, unit: "%" }}
                                 height={{ value: 100, unit: "%" }}
                                 src={"https://www.birchlabs.co.uk"}
