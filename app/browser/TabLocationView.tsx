@@ -51,7 +51,7 @@ class UrlTextField extends React.Component<{}, {}> {
 class PageOptionsButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton/>
+            <ToolbarButton text={"\uf141"}/>
         );
     }
 }

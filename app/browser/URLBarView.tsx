@@ -91,10 +91,13 @@ class StopReloadButton extends React.Component<{ loading: boolean }, {}> {
         );
     }
 }
+/**
+ * Menu refers to the app menu, not a page-specific menu.
+ */
 class MenuButton extends React.Component<{}, {}> {
     render(){
         return (
-            <ToolbarButton text={"\uf141"}/>
+            <ToolbarButton text={"\uf142"}/>
         );
     }
 }
