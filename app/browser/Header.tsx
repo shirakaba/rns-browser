@@ -6,6 +6,10 @@ import { TopTabsViewController } from "./TopTabsViewController";
 import { StackLayoutComponentProps } from "react-nativescript/dist/components/StackLayout";
 
 interface Props {
+    slotBackgroundColor?: string,
+    textFieldBackgroundColor?: string,
+    buttonBackgroundColor?: string,
+    inOverlayMode: boolean,
     toolbarIsShowing: boolean,
 }
 
@@ -24,23 +28,39 @@ class TopTabsContainer extends React.Component<{}, {}>{
     }
 }
 
-type UrlBarTopTabsContainerProps = { inOverlayMode: boolean, toolbarIsShowing: boolean, } & StackLayoutComponentProps;
+interface UrlBarTopTabsContainerProps {
+    slotBackgroundColor?: string,
+    textFieldBackgroundColor?: string,
+    buttonBackgroundColor?: string,
+    inOverlayMode: boolean,
+    toolbarIsShowing: boolean,
+}
 
-class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps, {}>{
-
+// https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L105
+class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps & StackLayoutComponentProps, {}> {
     render(){
-        const { children, toolbarIsShowing, ...rest } = this.props;
+        const {
+            slotBackgroundColor,
+            textFieldBackgroundColor,
+            buttonBackgroundColor,
+            toolbarIsShowing,
+            inOverlayMode,
+            children,
+            ...rest
+        } = this.props;
+
         return (
-            <$StackLayout
-                width={{ value: 100, unit: "%"}} {...rest}
-            >
+            // UIView(frame: CGRect.zero)
+            <$StackLayout {...rest}>
+                {/* urlBar */}
                 <URLBarView
-                    inOverlayMode={false}
+                    inOverlayMode={inOverlayMode}
                     toolbarIsShowing={toolbarIsShowing}
-                    slotBackgroundColor={"gray"}
-                    textFieldBackgroundColor={"white"}
-                    buttonBackgroundColor={"transparent"}
+                    slotBackgroundColor={slotBackgroundColor}
+                    textFieldBackgroundColor={textFieldBackgroundColor}
+                    buttonBackgroundColor={buttonBackgroundColor}
                 />
+                {/* topTabsContainer */}
                 <TopTabsContainer/>
             </$StackLayout>
         );
@@ -50,9 +70,23 @@ class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps
 export class Header extends React.Component<Props, State>{
 
     render(){
-        const { toolbarIsShowing } = this.props;
+        const {
+            slotBackgroundColor,
+            textFieldBackgroundColor,
+            buttonBackgroundColor,
+            toolbarIsShowing,
+            inOverlayMode,
+            children,
+            ...rest
+        } = this.props;
         return (
-            <UrlBarTopTabsContainer inOverlayMode={false} toolbarIsShowing={toolbarIsShowing}/>
+            <UrlBarTopTabsContainer
+                inOverlayMode={inOverlayMode}
+                toolbarIsShowing={toolbarIsShowing}
+                slotBackgroundColor={slotBackgroundColor}
+                textFieldBackgroundColor={textFieldBackgroundColor}
+                buttonBackgroundColor={buttonBackgroundColor}
+            />
         );
     }
 }

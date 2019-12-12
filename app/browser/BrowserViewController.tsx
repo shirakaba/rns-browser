@@ -29,34 +29,6 @@ class TopTabsContainer extends React.Component<{}, {}> {
     }
 }
 
-interface UrlBarTopTabsContainerProps {
-    inOverlayMode: boolean,
-    toolbarIsShowing: boolean,
-}
-
-// https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L105
-class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps, {}> {
-    render(){
-        const { toolbarIsShowing, inOverlayMode } = this.props;
-
-        return (
-            // UIView(frame: CGRect.zero)
-            <$StackLayout>
-                {/* urlBar */}
-                <URLBarView
-                    inOverlayMode={inOverlayMode}
-                    toolbarIsShowing={toolbarIsShowing}
-                    slotBackgroundColor={"gray"}
-                    textFieldBackgroundColor={"white"}
-                    buttonBackgroundColor={"transparent"}
-                />
-                {/* topTabsContainer */}
-                <TopTabsContainer/>
-            </$StackLayout>
-        );
-    }
-}
-
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
 class NotchAreaCover extends React.Component<{ orientation: "portrait"|"landscape"|"unknown" } & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
@@ -67,7 +39,13 @@ class NotchAreaCover extends React.Component<{ orientation: "portrait"|"landscap
                 backgroundColor={"gray"}
                 {...rest}
             >
-                <Header toolbarIsShowing={orientation === "landscape"}/>
+                <Header
+                    toolbarIsShowing={orientation === "landscape"}
+                    inOverlayMode={false}
+                    slotBackgroundColor={"purple"}
+                    textFieldBackgroundColor={"white"}
+                    buttonBackgroundColor={"transparent"}
+                />
             </$StackLayout>
         );
     }
