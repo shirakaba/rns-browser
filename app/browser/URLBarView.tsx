@@ -155,7 +155,7 @@ export class URLBarView extends React.Component<Props, State>{
                     <ForwardButton backgroundColor={buttonBackgroundColor}/>
                     <StopReloadButton backgroundColor={buttonBackgroundColor} loading={false}/>
                     {/* AKA locationView. */}
-                    <TabLocationView slotBackgroundColor={""} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                     <TabsButton backgroundColor={buttonBackgroundColor}/>
                     <MenuButton backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
@@ -171,7 +171,7 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                 >
                     {/* AKA locationView. */}
-                    <TabLocationView slotBackgroundColor={""} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                 </$FlexboxLayout>
             );
         }
