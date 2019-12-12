@@ -50,7 +50,9 @@ class NotchAreaCover extends React.Component<StackLayoutComponentProps, {}> {
         const { children, ...rest } = this.props;
         return (
             <$StackLayout
-                width={{ value: 100, unit: "%"}} {...rest}
+                width={{ value: 100, unit: "%"}}
+                backgroundColor={"gray"}
+                {...rest}
             >
                 <Header/>
             </$StackLayout>
@@ -226,7 +228,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                                 }}
                                 width={{ value: 100, unit: "%" }}
                                 height={{ value: 100, unit: "%" }}
-                                src={"https://www.birchlabs.co.uk"}
+                                src={"https://apps.apple.com/gb/app/linguabrowse/id1281350165"}
                             />
                         </WebViewContainer>
                     </$GridLayout>
@@ -236,7 +238,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={3} showToolbar={true} backgroundColor={"purple"}/>
+                    <Footer row={3} showToolbar={true} backgroundColor={"gray"} visibility={"collapse"}/>
                 </$GridLayout>
             </$GridLayout>
         );

@@ -101,7 +101,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     alignItems={"center"}
                     justifyContent={"space-around"}
                     // flexWrap={"nowrap"}
-                    backgroundColor={"gold"}
+                    backgroundColor={"gray"}
                     flexGrow={1}
                 >
                     {/* frontSpaceView */}
@@ -113,7 +113,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     {/* privacyIndicatorSeparator */}
                     <$ContentView width={{ value: 3, unit: "dip" }}/>
                     <LockImageView locked={true}/>
-                    <UrlTextField backgroundColor={"yellow"} flexGrow={1}/>
+                    <UrlTextField backgroundColor={"white"} flexGrow={1}/>
                     <PageOptionsButton/>
                 </$FlexboxLayout>
             </$FlexboxLayout>
