@@ -10,14 +10,15 @@ import { TabLocationView } from "./TabLocationView";
 /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift */
 
 interface Props {
-
+    inOverlayMode: boolean,
+    toolbarIsShowing: boolean,
 }
 
 interface State {
-    inOverlayMode: boolean;
-    toolbarIsShowing: boolean;
-    location: string; // locationTextField?.text
-    // text: string; // locationTextField?.text
+    inOverlayMode: boolean,
+    toolbarIsShowing: boolean,
+    location: string, // locationTextField?.text
+    // text: string, // locationTextField?.text
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift#L786
@@ -107,8 +108,8 @@ export class URLBarView extends React.Component<Props, State>{
         super(props);
         
         this.state = {
-            inOverlayMode: false,
-            toolbarIsShowing: true,
+            inOverlayMode: props.inOverlayMode,
+            toolbarIsShowing: props.toolbarIsShowing,
             location: "https://www.birchlabs.co.uk",
         };
     }

@@ -29,14 +29,21 @@ class TopTabsContainer extends React.Component<{}, {}> {
     }
 }
 
+interface UrlBarTopTabsContainerProps {
+    inOverlayMode: boolean,
+    toolbarIsShowing: boolean,
+}
+
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L105
-class UrlBarTopTabsContainer extends React.Component<{}, {}> {
+class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps, {}> {
     render(){
+        const { toolbarIsShowing, inOverlayMode } = this.props;
+
         return (
             // UIView(frame: CGRect.zero)
             <$StackLayout>
                 {/* urlBar */}
-                <URLBarView/>
+                <URLBarView inOverlayMode={inOverlayMode} toolbarIsShowing={toolbarIsShowing}/>
                 {/* topTabsContainer */}
                 <TopTabsContainer/>
             </$StackLayout>
@@ -45,16 +52,16 @@ class UrlBarTopTabsContainer extends React.Component<{}, {}> {
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
-class NotchAreaCover extends React.Component<StackLayoutComponentProps, {}> {
+class NotchAreaCover extends React.Component<{ orientation: "portrait"|"landscape"|"unknown" } & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { children, ...rest } = this.props;
+        const { orientation, children, ...rest } = this.props;
         return (
             <$StackLayout
                 width={{ value: 100, unit: "%"}}
                 backgroundColor={"gray"}
                 {...rest}
             >
-                <Header/>
+                <Header toolbarIsShowing={orientation === "landscape"}/>
             </$StackLayout>
         );
     }
@@ -183,7 +190,7 @@ interface State {
 export class BrowserViewController extends React.Component<Props, State> {
 
     render(){
-
+        const { orientation } = this.props;
         // Visibility of certain components changes when switching app (if in private browsing mode)
         // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
 
@@ -209,7 +216,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     // backgroundColor={"pink"}
                 >
                     <TopTouchArea row={0}/>
-                    <NotchAreaCover row={1}/>
+                    <NotchAreaCover row={1} orientation={orientation}/>
                     <$GridLayout
                         row={2}
                         width={{ value: 100, unit: "%"}}
@@ -238,7 +245,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={3} showToolbar={true} backgroundColor={"gray"} visibility={"collapse"}/>
+                    <Footer row={3} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
                 </$GridLayout>
             </$GridLayout>
         );

@@ -6,7 +6,7 @@ import { TopTabsViewController } from "./TopTabsViewController";
 import { StackLayoutComponentProps } from "react-nativescript/dist/components/StackLayout";
 
 interface Props {
-
+    toolbarIsShowing: boolean,
 }
 
 interface State {
@@ -24,17 +24,17 @@ class TopTabsContainer extends React.Component<{}, {}>{
     }
 }
 
-type UrlBarTopTabsContainerProps = { } & StackLayoutComponentProps;
+type UrlBarTopTabsContainerProps = { inOverlayMode: boolean, toolbarIsShowing: boolean, } & StackLayoutComponentProps;
 
 class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps, {}>{
 
     render(){
-        const { children, ...rest } = this.props;
+        const { children, toolbarIsShowing, ...rest } = this.props;
         return (
             <$StackLayout
                 width={{ value: 100, unit: "%"}} {...rest}
             >
-                <URLBarView/>
+                <URLBarView inOverlayMode={false} toolbarIsShowing={toolbarIsShowing}/>
                 <TopTabsContainer/>
             </$StackLayout>
         );
@@ -44,8 +44,9 @@ class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps
 export class Header extends React.Component<Props, State>{
 
     render(){
+        const { toolbarIsShowing } = this.props;
         return (
-            <UrlBarTopTabsContainer/>
+            <UrlBarTopTabsContainer inOverlayMode={false} toolbarIsShowing={toolbarIsShowing}/>
         );
     }
 }
