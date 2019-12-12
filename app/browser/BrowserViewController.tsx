@@ -171,7 +171,7 @@ class OverlayBackground extends React.Component<{}, {}> {
 }
 
 interface Props {
-
+    orientation: "portrait"|"landscape"|"unknown",
 }
 
 interface State {
