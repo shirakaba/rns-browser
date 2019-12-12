@@ -1,6 +1,6 @@
 import * as React from "react";
-import { WebView, ActionBar, StackLayout } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $ContentView, $Image, $TextField, $GridLayout } from "react-nativescript";
+import { WebView, ActionBar, StackLayout, EventData, TextField } from "@nativescript/core";
+import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $ContentView, $Image, $TextField, $GridLayout, $TextView } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
 import { PrivacyIndicatorView } from "~/Views/PrivacyIndicatorView";
 import { TextFieldComponentProps } from "react-nativescript/dist/components/TextField";
@@ -37,12 +37,36 @@ class LockImageView extends React.Component<{ locked: boolean } & ButtonComponen
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L319
-class DisplayTextField extends React.Component<TextFieldComponentProps, {}> {
+class DisplayTextField extends React.Component<TextFieldComponentProps, { text: string }> {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            text: "",
+        }
+    }
+
+    private readonly onTextChange = (args: EventData) => {
+        const textField: TextField = args.object as TextField;
+        this.setState({ text: textField.text });
+    };
+
+    private readonly onReturnPress = (args: EventData) => {
+        const textField: TextField = args.object as TextField;
+        // TODO: release newer RNS with support for onReturnPress!
+    };
+
     render(){
         const { ...rest } = this.props;
+        const { text } = this.state;
 
         return (
-            <$TextField {...rest}/>
+            <$TextField
+                {...rest}
+                text={text}
+                onTextChange={this.onTextChange}
+                // onReturnPress={this.onReturnPress}
+            />
         );
     }
 }

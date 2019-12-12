@@ -111,7 +111,7 @@ export class URLBarView extends React.Component<Props, State>{
     }
 
     render(){
-        const { toolbarIsShowing, inOverlayMode, location } = this.props;
+        const { toolbarIsShowing, inOverlayMode } = this.props;
         const { } = this.state;
 
         let stackContents: React.ReactNode;
