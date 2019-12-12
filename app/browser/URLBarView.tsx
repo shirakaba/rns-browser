@@ -12,12 +12,10 @@ import { TabLocationView } from "./TabLocationView";
 interface Props {
     inOverlayMode: boolean,
     toolbarIsShowing: boolean,
+    // location: string, // locationTextField?.text
 }
 
 interface State {
-    inOverlayMode: boolean,
-    toolbarIsShowing: boolean,
-    location: string, // locationTextField?.text
     // text: string, // locationTextField?.text
 }
 
@@ -108,15 +106,13 @@ export class URLBarView extends React.Component<Props, State>{
         super(props);
         
         this.state = {
-            inOverlayMode: props.inOverlayMode,
-            toolbarIsShowing: props.toolbarIsShowing,
             location: "https://www.birchlabs.co.uk",
         };
     }
 
     render(){
-        const { } = this.props;
-        const { inOverlayMode, toolbarIsShowing } = this.state;
+        const { toolbarIsShowing, inOverlayMode, location } = this.props;
+        const { } = this.state;
 
         let stackContents: React.ReactNode;
 
