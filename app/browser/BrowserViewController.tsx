@@ -42,8 +42,8 @@ class NotchAreaCover extends React.Component<{ orientation: "portrait"|"landscap
                 <Header
                     toolbarIsShowing={orientation === "landscape"}
                     inOverlayMode={false}
-                    slotBackgroundColor={"purple"}
-                    textFieldBackgroundColor={"white"}
+                    slotBackgroundColor={"darkgray"}
+                    textFieldBackgroundColor={"transparent"}
                     buttonBackgroundColor={"transparent"}
                 />
             </$StackLayout>

@@ -67,6 +67,7 @@ class DisplayTextField extends React.Component<TextFieldComponentProps, { text: 
                 {...rest}
                 text={text}
                 onTextChange={this.onTextChange}
+                hint={"Search or enter address"}
                 // onReturnPress={this.onReturnPress}
             />
         );
@@ -128,6 +129,8 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     justifyContent={"space-around"}
                     // flexWrap={"nowrap"}
                     backgroundColor={slotBackgroundColor}
+                    borderRadius={30}
+                    margin={8}
                     flexGrow={1}
                 >
                     {/* frontSpaceView */}
