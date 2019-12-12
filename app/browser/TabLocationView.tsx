@@ -9,7 +9,9 @@ import { ButtonComponentProps } from "react-nativescript/dist/components/Button"
 import { FlexboxLayoutComponentProps } from "react-nativescript/dist/components/FlexboxLayout";
 
 interface Props {
-
+    slotBackgroundColor?: string,
+    buttonBackgroundColor?: string,
+    textFieldBackgroundColor?: string,
 }
 
 interface State {
@@ -88,7 +90,7 @@ class PageOptionsButton extends React.Component<{} & ButtonComponentProps, {}> {
         const { ...rest } = this.props;
 
         return (
-            <ToolbarButton text={"\uf141"} {...rest}/>
+            <ToolbarButton {...rest} text={"\uf141"}/>
         );
     }
 }
@@ -108,7 +110,7 @@ class PrivacyIndicator extends React.Component<{} & ButtonComponentProps, {}> {
 export class TabLocationView extends React.Component<Props & FlexboxLayoutComponentProps, State>{
 
     render(){
-        const { ...rest } = this.props;
+        const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", ...rest } = this.props;
 
         return (
             /* self.view */
@@ -125,7 +127,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     alignItems={"center"}
                     justifyContent={"space-around"}
                     // flexWrap={"nowrap"}
-                    backgroundColor={"gray"}
+                    backgroundColor={slotBackgroundColor}
                     flexGrow={1}
                 >
                     {/* frontSpaceView */}
@@ -137,8 +139,8 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     {/* privacyIndicatorSeparator */}
                     <$ContentView width={{ value: 3, unit: "dip" }}/>
                     <LockImageView locked={true}/>
-                    <UrlTextField backgroundColor={"white"} flexGrow={1}/>
-                    <PageOptionsButton/>
+                    <UrlTextField backgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <PageOptionsButton backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
             </$FlexboxLayout>
         );

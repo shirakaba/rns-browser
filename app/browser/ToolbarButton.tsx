@@ -14,8 +14,14 @@ interface State {
 export class ToolbarButton extends React.Component<Props & ButtonComponentProps, State>{
 
     render(){
-        const { children, text, ...rest } = this.props;
-        const bgColour: string = "gray";
+        const { children, text, backgroundColor, ...rest } = this.props;
+        
+        const commonBackgroundColor: string|undefined = backgroundColor ?
+            (
+                (backgroundColor as Color).hex ? 
+                    (backgroundColor as Color).hex : 
+                    backgroundColor as string
+            ) : "transparent";
         const textColour: string = "white";
 
         return (
@@ -23,13 +29,13 @@ export class ToolbarButton extends React.Component<Props & ButtonComponentProps,
                 className=""
                 width={{ value: 40, unit: "dip" }}
                 height={{ value: 40, unit: "dip" }}
-                backgroundColor={bgColour}
+                backgroundColor={commonBackgroundColor}
                 {...rest}
             >
                 <$FormattedString>
                     <$Span
                         color={new Color(textColour)}
-                        backgroundColor={new Color(bgColour)}
+                        backgroundColor={new Color(commonBackgroundColor)}
                         fontFamily="FontAwesome"
                         text={text}
                     />

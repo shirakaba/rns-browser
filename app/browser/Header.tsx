@@ -34,7 +34,13 @@ class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps
             <$StackLayout
                 width={{ value: 100, unit: "%"}} {...rest}
             >
-                <URLBarView inOverlayMode={false} toolbarIsShowing={toolbarIsShowing}/>
+                <URLBarView
+                    inOverlayMode={false}
+                    toolbarIsShowing={toolbarIsShowing}
+                    slotBackgroundColor={"gray"}
+                    textFieldBackgroundColor={"white"}
+                    buttonBackgroundColor={"transparent"}
+                />
                 <TopTabsContainer/>
             </$StackLayout>
         );

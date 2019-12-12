@@ -6,10 +6,14 @@ import { ToolbarButton } from "./ToolbarButton";
 import { TabsButton } from "~/Widgets/TabsButton";
 import { AutocompleteTextField } from "~/Widgets/AutocompleteTextField";
 import { TabLocationView } from "./TabLocationView";
+import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 
 /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift */
 
 interface Props {
+    slotBackgroundColor?: string,
+    textFieldBackgroundColor?: string,
+    buttonBackgroundColor?: string,
     inOverlayMode: boolean,
     toolbarIsShowing: boolean,
     // location: string, // locationTextField?.text
@@ -42,10 +46,11 @@ class TabLocationContainerView extends React.Component<{}, {}>{
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift#L136
-class CancelButton extends React.Component<{}, {}>{
+class CancelButton extends React.Component<{} & ButtonComponentProps, {}>{
     render(){
+        const { ...rest } = this.props;
         return (
-            <$Button/>
+            <$Button {...rest}/>
         );
     }
 }
@@ -59,26 +64,29 @@ class LocationContainer extends React.Component<{}, {}>{
     }
 }
 
-class BackButton extends React.Component<{}, {}> {
+class BackButton extends React.Component<{} & ButtonComponentProps, {}> {
     render(){
+        const { ...rest } = this.props;
         return (
-            <ToolbarButton text={"\uf053"}/>
+            <ToolbarButton {...rest} text={"\uf053"}/>
         );
     }
 }
-class ForwardButton extends React.Component<{}, {}> {
+class ForwardButton extends React.Component<{} & ButtonComponentProps, {}> {
     render(){
+        const { ...rest } = this.props;
         return (
-            <ToolbarButton text={"\uf054"}/>
+            <ToolbarButton {...rest} text={"\uf054"}/>
         );
     }
 }
-class StopReloadButton extends React.Component<{ loading: boolean }, {}> {
+class StopReloadButton extends React.Component<{ loading: boolean } & ButtonComponentProps, {}> {
     render(){
-        const { loading } = this.props;
+        const { loading, ...rest } = this.props;
 
         return (
             <ToolbarButton
+                {...rest}
                 text={
                     loading ?
                     // Stop (cross symbol)
@@ -93,10 +101,11 @@ class StopReloadButton extends React.Component<{ loading: boolean }, {}> {
 /**
  * Menu refers to the app menu, not a page-specific menu.
  */
-class MenuButton extends React.Component<{}, {}> {
+class MenuButton extends React.Component<{} & ButtonComponentProps, {}> {
     render(){
+        const { ...rest } = this.props;
         return (
-            <ToolbarButton text={"\uf142"}/>
+            <ToolbarButton {...rest} text={"\uf142"}/>
         );
     }
 }
@@ -111,7 +120,7 @@ export class URLBarView extends React.Component<Props, State>{
     }
 
     render(){
-        const { toolbarIsShowing, inOverlayMode } = this.props;
+        const { slotBackgroundColor = "gray", textFieldBackgroundColor = "white", buttonBackgroundColor = "transparent", toolbarIsShowing, inOverlayMode } = this.props;
         const { } = this.state;
 
         let stackContents: React.ReactNode;
@@ -128,10 +137,11 @@ export class URLBarView extends React.Component<Props, State>{
                 >
                     {/* AKA locationTextField */}
                     <ToolbarTextField/>
-                    <CancelButton/>
+                    <CancelButton backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
             );
         } else if(toolbarIsShowing){
+            // i.e. landscape (so show all the items that the footer would normally handle)
             stackContents = (
                 <$FlexboxLayout
                     flexDirection={"row"}
@@ -141,16 +151,17 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                     // flexWrap={"nowrap"}
                 >
-                    <BackButton/>
-                    <ForwardButton/>
-                    <StopReloadButton loading={false}/>
+                    <BackButton backgroundColor={buttonBackgroundColor}/>
+                    <ForwardButton backgroundColor={buttonBackgroundColor}/>
+                    <StopReloadButton backgroundColor={buttonBackgroundColor} loading={false}/>
                     {/* AKA locationView. */}
-                    <TabLocationView flexGrow={1}/>
-                    <TabsButton/>
-                    <MenuButton/>
+                    <TabLocationView slotBackgroundColor={""} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <TabsButton backgroundColor={buttonBackgroundColor}/>
+                    <MenuButton backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
             );
         } else {
+            // i.e. portrait (so hide all the items that the footer will be handling)
             stackContents = (
                 <$FlexboxLayout
                     flexDirection={"row"}
@@ -160,7 +171,7 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                 >
                     {/* AKA locationView. */}
-                    <TabLocationView flexGrow={1}/>
+                    <TabLocationView slotBackgroundColor={""} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                 </$FlexboxLayout>
             );
         }
