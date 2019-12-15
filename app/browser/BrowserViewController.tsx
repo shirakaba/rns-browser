@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WebView, ActionBar } from "@nativescript/core";
+import { WebView, ActionBar, PanGestureEventData, isIOS, isAndroid } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout, $FlexboxLayout } from "react-nativescript";
 import { StackLayoutProps, ButtonProps } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { URLBarView } from "./URLBarView";
@@ -9,6 +9,11 @@ import { TabToolbar } from "./TabToolbar";
 import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 import { StackLayoutComponentProps } from "react-nativescript/dist/components/StackLayout";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
+import { LoadEventData } from "tns-core-modules/ui/web-view/web-view";
+import { connect } from "react-redux";
+import { WholeStoreState } from "~/store/store";
+import { webViews, updateUrlBarText } from "~/store/navigationState";
+import { BetterWebView } from "~/components/BetterWebView";
 
 const BrowserViewControllerUX = {
     ShowHeaderTapAreaHeight: 0,
@@ -69,10 +74,53 @@ class WebViewContainerBackdrop extends React.Component<StackLayoutComponentProps
     }
 }
 
+interface WebViewContainerProps {
+    activeTab: string,
+    tabToUrlMap: Record<string, string>,
+    updateUrlBarText: typeof updateUrlBarText,
+}
 
-class WebViewContainer extends React.Component<StackLayoutComponentProps, {}> {
+class WebViewContainer extends React.Component<WebViewContainerProps & StackLayoutComponentProps, { }> {
+    private readonly onPan = (e: PanGestureEventData) => {
+        console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
+        // TODO: Use this info to retract the bars.
+    };
+
+    private readonly onLoadStarted = (args: LoadEventData) => {
+        const { error, eventName, url, navigationType, object } = args;
+        const wv: WebView = object as WebView;
+        console.log(`[WebView onLoadStarted] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
+        // if(!error){
+        //     // FIXME: NativeScript seems to fire loading events on iframes, so wv.src is what we want, rather than args.url.
+        //     this.props.updateUrlBarText(url);
+        // }
+    };
+
+    private readonly onLoadCommitted = (args: LoadEventData) => {
+        const { error, eventName, url, navigationType, object } = args;
+        const wv: WebView = object as WebView;
+        console.log(`[WebView onLoadCommitted] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
+
+        if(!error && isIOS){
+            /* iOS seems to fire loading events on the non-main frame, so onLoadCommitted event is the best one on which to update the main-frame URL.
+             * This event doesn't exist on Android to my knowledge, so I haven't hooked it up in BetterWebView. */
+            this.props.updateUrlBarText(url);
+        }
+    };
+
+    private readonly onLoadFinished = (args: LoadEventData) => {
+        const { error, eventName, url, navigationType, object } = args;
+        const wv: WebView = object as WebView;
+        console.log(`[WebView onLoadFinished] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
+
+        if(!error && isAndroid){
+            /* TODO: check whether Android fires onLoadFinished at sensible moments for updating the URL bar text. */
+            this.props.updateUrlBarText(url);
+        }
+    };
+
     render(){
-        const { children, ...rest } = this.props;
+        const { activeTab, tabToUrlMap, children, ...rest } = this.props;
 
         return (
             // UIView()
@@ -81,11 +129,34 @@ class WebViewContainer extends React.Component<StackLayoutComponentProps, {}> {
                 height={{ value: 100, unit: "%" }}
                 {...rest}
             >
-                {children}
+                <BetterWebView
+                    // TODO: will have to solve how best to build one webView for each tab, give it a unique ref, and allow animation between tabs.
+                    ref={webViews.get(activeTab)}
+                    onPan={this.onPan}
+                    onLoadStarted={this.onLoadStarted}
+                    onLoadCommitted={this.onLoadCommitted}
+                    onLoadFinished={this.onLoadFinished}
+                    width={{ value: 100, unit: "%" }}
+                    height={{ value: 100, unit: "%" }}
+                    src={"https://www.birchlabs.co.uk"}
+                />
             </$StackLayout>
         );
     }
 }
+
+const WebViewContainerConnected = connect(
+    (wholeStoreState: WholeStoreState) => {
+        // console.log(`wholeStoreState`, wholeStoreState);
+        return {
+            activeTab: wholeStoreState.navigation.activeTab,
+            tabToUrlMap: wholeStoreState.navigation.tabToUrlMap,
+        };
+    },
+    {
+        updateUrlBarText,
+    },
+)(WebViewContainer);
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L104
 /**
@@ -136,17 +207,19 @@ class Footer extends React.Component<FooterProps, {}> {
         const { showToolbar, children, ...rest } = this.props;
 
         if(showToolbar){
+            /* Warning: I've tried other layouts (StackLayout and FlexboxLayout) here, but they shift
+             * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
-                <$StackLayout width={{ value: 100, unit: "%"}} {...rest}>
+                <$ContentView width={{ value: 100, unit: "%" }} {...rest}>
                     <TabToolbar/>
-                </$StackLayout>
+                </$ContentView>
             );
         }
 
         // Unclear what footer should do when not showing toolbar...
         return (
-            <$StackLayout>
-            </$StackLayout>
+            <$ContentView>
+            </$ContentView>
         );
     }
 }
@@ -208,20 +281,8 @@ export class BrowserViewController extends React.Component<Props, State> {
                         rows={[new ItemSpec(1, "star")]}
                         columns={[new ItemSpec(1, "star")]}
                     >
-                        <WebViewContainerBackdrop row={0} col={0}/>
-                        <WebViewContainer row={0} col={0}>
-                            <$WebView
-                                // onTouch={() => {
-                                //     console.log(`WebView touched`);
-                                // }}
-                                onPan={(e) => {
-                                    console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
-                                }}
-                                width={{ value: 100, unit: "%" }}
-                                height={{ value: 100, unit: "%" }}
-                                src={"https://apps.apple.com/gb/app/linguabrowse/id1281350165"}
-                            />
-                        </WebViewContainer>
+                        <WebViewContainerBackdrop row={0} col={0} backgroundColor={"gold"}/>
+                        <WebViewContainerConnected row={0} col={0}/>
                     </$GridLayout>
 
                     {/* <AlertStackView/> */}

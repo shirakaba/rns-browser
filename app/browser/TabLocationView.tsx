@@ -7,6 +7,9 @@ import { TextFieldComponentProps } from "react-nativescript/dist/components/Text
 import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 import { FlexboxLayoutComponentProps } from "react-nativescript/dist/components/FlexboxLayout";
+import { connect } from 'react-redux';
+import { updateUrlBarText, submitUrlBarTextToActiveWebView } from "~/store/navigationState";
+import { WholeStoreState } from "~/store/store";
 
 interface Props {
     slotBackgroundColor?: string,
@@ -38,41 +41,62 @@ class LockImageView extends React.Component<{ locked: boolean } & ButtonComponen
     }
 }
 
+interface DisplayTextFieldProps {
+    urlBarText: string,
+
+    updateUrlBarText: typeof updateUrlBarText,
+    // setUrlOnWebView: typeof setUrlOnWebView,
+    submitUrlBarTextToActiveWebView: typeof submitUrlBarTextToActiveWebView,
+}
+
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L319
-class DisplayTextField extends React.Component<TextFieldComponentProps, { text: string }> {
-    constructor(props){
-        super(props);
-
-        this.state = {
-            text: "",
-        }
-    }
-
+class DisplayTextField extends React.Component<DisplayTextFieldProps & TextFieldComponentProps, {}> {
     private readonly onTextChange = (args: EventData) => {
         const textField: TextField = args.object as TextField;
-        this.setState({ text: textField.text });
+        // console.log(`[onTextChange] ${textField.text}`);
+
+        this.props.updateUrlBarText(textField.text);
     };
 
     private readonly onReturnPress = (args: EventData) => {
         const textField: TextField = args.object as TextField;
-        // TODO: release newer RNS with support for onReturnPress!
+        // console.log(`[onReturnPress] ${textField.text}`);
+
+        this.props.submitUrlBarTextToActiveWebView(textField.text);
     };
 
     render(){
-        const { ...rest } = this.props;
-        const { text } = this.state;
+        const { urlBarText, ...rest } = this.props;
+        const {} = this.state;
 
         return (
             <$TextField
                 {...rest}
-                text={text}
+                text={urlBarText}
+                autocorrect={false}
+                autocapitalizationType={"none"}
+                keyboardType={"url"}
+                returnKeyType={"go"}
                 onTextChange={this.onTextChange}
                 hint={"Search or enter address"}
-                // onReturnPress={this.onReturnPress}
+                onReturnPress={this.onReturnPress}
             />
         );
     }
 }
+
+const DisplayTextFieldConnected = connect(
+    (wholeStoreState: WholeStoreState) => {
+        // console.log(`wholeStoreState`, wholeStoreState);
+        return {
+            urlBarText: wholeStoreState.navigation.urlBarText,
+        };
+    },
+    {
+        updateUrlBarText,
+        submitUrlBarTextToActiveWebView,
+    },
+)(DisplayTextField);
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L62
 class UrlTextField extends React.Component<TextFieldComponentProps, {}> {
@@ -80,7 +104,8 @@ class UrlTextField extends React.Component<TextFieldComponentProps, {}> {
         const { ...rest } = this.props;
 
         return (
-            <DisplayTextField {...rest}/>
+            <DisplayTextFieldConnected {...rest}/>
+            // <DisplayTextField urlBarText={"whatever"} {...rest}/>
         );
     }
 }

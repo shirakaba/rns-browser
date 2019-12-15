@@ -5,6 +5,8 @@ import { ItemSpec } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
 import { Frame, Page } from 'tns-core-modules/ui/frame/frame';
 import { BrowserViewController } from '~/browser/BrowserViewController';
 import { Application, OrientationChangedEventData } from "@nativescript/core";
+import { Provider } from 'react-redux';
+import { store } from '~/store/store';
 
 interface Props {
     forwardedRef: React.RefObject<any>,
@@ -41,9 +43,12 @@ class AppContainer extends React.Component<Props, State> {
         const { orientation } = this.state;
 
         return (
-            <$Page ref={forwardedRef} actionBarHidden={true}>
-                <BrowserViewController orientation={orientation}/>
-            </$Page>
+            <Provider store={store}>
+                <$Page ref={forwardedRef} actionBarHidden={true}>
+                    <BrowserViewController orientation={orientation}/>
+                    {/* <MyTextField backgroundColor={"orange"}/> */}
+                </$Page>
+            </Provider>
         );
     }
 }

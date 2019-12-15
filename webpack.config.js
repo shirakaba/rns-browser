@@ -129,7 +129,7 @@ module.exports = env => {
                         /* Needed (I think) for react-hot-loader.
                          * Note that there is no @hot-loader/react-nativescript to alias to, so I can't comment on whether HMR will work for hooks. */
                         { "react-dom": "react-nativescript" } :
-                        {}
+                        { "react-dom": "react-nativescript" }
                     ),
             },
             // resolve symlinks to symlinked modules

@@ -3,10 +3,12 @@ import { WebView, ActionBar, StackLayout } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout } from "react-nativescript";
 import { GradientProgressBar } from "../Widgets/GradientProgressBar";
 import { ToolbarButton } from "./ToolbarButton";
-import { TabsButton } from "~/Widgets/TabsButton";
 import { AutocompleteTextField } from "~/Widgets/AutocompleteTextField";
 import { TabLocationView } from "./TabLocationView";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
+import { BackButtonConnected, ForwardButtonConnected, StopReloadButtonConnected, TabsButtonConnected, MenuButtonConnected, CancelButtonConnected } from "./BarButtons";
+import { connect } from "react-redux";
+import { WholeStoreState } from "~/store/store";
 
 /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift */
 
@@ -45,67 +47,11 @@ class TabLocationContainerView extends React.Component<{}, {}>{
     }
 }
 
-// https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift#L136
-class CancelButton extends React.Component<{} & ButtonComponentProps, {}>{
-    render(){
-        const { ...rest } = this.props;
-        return (
-            <$Button {...rest}/>
-        );
-    }
-}
-
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift#L108
 class LocationContainer extends React.Component<{}, {}>{
     render(){
         return (
             <TabLocationContainerView/>
-        );
-    }
-}
-
-class BackButton extends React.Component<{} & ButtonComponentProps, {}> {
-    render(){
-        const { ...rest } = this.props;
-        return (
-            <ToolbarButton {...rest} text={"\uf053"}/>
-        );
-    }
-}
-class ForwardButton extends React.Component<{} & ButtonComponentProps, {}> {
-    render(){
-        const { ...rest } = this.props;
-        return (
-            <ToolbarButton {...rest} text={"\uf054"}/>
-        );
-    }
-}
-class StopReloadButton extends React.Component<{ loading: boolean } & ButtonComponentProps, {}> {
-    render(){
-        const { loading, ...rest } = this.props;
-
-        return (
-            <ToolbarButton
-                {...rest}
-                text={
-                    loading ?
-                    // Stop (cross symbol)
-                    "\uf00d" :
-                    // Reload (redo symbol)
-                    "\uf01e"
-                }
-            />
-        );
-    }
-}
-/**
- * Menu refers to the app menu, not a page-specific menu.
- */
-class MenuButton extends React.Component<{} & ButtonComponentProps, {}> {
-    render(){
-        const { ...rest } = this.props;
-        return (
-            <ToolbarButton {...rest} text={"\uf142"}/>
         );
     }
 }
@@ -137,7 +83,7 @@ export class URLBarView extends React.Component<Props, State>{
                 >
                     {/* AKA locationTextField */}
                     <ToolbarTextField/>
-                    <CancelButton backgroundColor={buttonBackgroundColor}/>
+                    <CancelButtonConnected backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
             );
         } else if(toolbarIsShowing){
@@ -151,13 +97,13 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                     // flexWrap={"nowrap"}
                 >
-                    <BackButton backgroundColor={buttonBackgroundColor}/>
-                    <ForwardButton backgroundColor={buttonBackgroundColor}/>
-                    <StopReloadButton backgroundColor={buttonBackgroundColor} loading={false}/>
+                    <BackButtonConnected backgroundColor={buttonBackgroundColor}/>
+                    <ForwardButtonConnected backgroundColor={buttonBackgroundColor}/>
+                    <StopReloadButtonConnected backgroundColor={buttonBackgroundColor} loading={false}/>
                     {/* AKA locationView. */}
                     <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
-                    <TabsButton backgroundColor={buttonBackgroundColor}/>
-                    <MenuButton backgroundColor={buttonBackgroundColor}/>
+                    <TabsButtonConnected backgroundColor={buttonBackgroundColor}/>
+                    <MenuButtonConnected backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
             );
         } else {
