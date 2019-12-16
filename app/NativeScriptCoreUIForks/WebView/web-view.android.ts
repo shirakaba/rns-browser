@@ -1,3 +1,4 @@
+/// <reference path="../../../node_modules/tns-platform-declarations/android.d.ts" />
 import { WebViewBase, knownFolders, traceEnabled, traceWrite, traceCategories, WebViewClient } from "./web-view-common";
 
 export * from "./web-view-common";

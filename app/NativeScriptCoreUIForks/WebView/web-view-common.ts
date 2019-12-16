@@ -13,12 +13,25 @@ export const srcProperty = new Property<WebViewBase, string>({ name: "src" });
 export abstract class WebViewBase extends ContainerView implements WebViewDefinition {
     public static loadStartedEvent = "loadStarted";
     public static loadFinishedEvent = "loadFinished";
+    public static commitFinishedEvent = "commitFinished";
 
     public src: string;
 
     public _onLoadFinished(url: string, error?: string) {
         let args = <LoadEventData>{
             eventName: WebViewBase.loadFinishedEvent,
+            object: this,
+            url: url,
+            navigationType: undefined,
+            error: error
+        };
+
+        this.notify(args);
+    }
+
+    public _onCommitFinished(url: string, error?: string) {
+        let args = <LoadEventData>{
+            eventName: WebViewBase.commitFinishedEvent,
             object: this,
             url: url,
             navigationType: undefined,
@@ -96,6 +109,7 @@ export abstract class WebViewBase extends ContainerView implements WebViewDefini
 export interface WebViewBase {
     on(eventNames: string, callback: (data: EventData) => void, thisArg?: any);
     on(event: "loadFinished", callback: (args: LoadEventData) => void, thisArg?: any);
+    on(event: "loadCommitted", callback: (args: LoadEventData) => void, thisArg?: any);
     on(event: "loadStarted", callback: (args: LoadEventData) => void, thisArg?: any);
 }
 

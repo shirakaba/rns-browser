@@ -1,3 +1,4 @@
+/// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 import { NavigationType } from ".";
 import { WebViewBase, knownFolders, traceWrite, traceEnabled, traceCategories } from "./web-view-common";
 import { profile } from "@nativescript/core/profiling";
@@ -48,6 +49,20 @@ class WKNavigationDelegateImpl extends NSObject
     public webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
         if (traceEnabled()) {
             traceWrite("WKNavigationDelegateClass.webViewDidStartProvisionalNavigation(" + webView.URL + ")", traceCategories.Debug);
+        }
+    }
+
+    public webViewDidCommitNavigation(webView: WKWebView, navigation: WKNavigation): void {
+        if (traceEnabled()) {
+            traceWrite("WKNavigationDelegateClass.webViewDidCommitNavigation(" + webView.URL + ")", traceCategories.Debug);
+        }
+        const owner = this._owner.get();
+        if (owner) {
+            let src = owner.src;
+            if (webView.URL) {
+                src = webView.URL.absoluteString;
+            }
+            owner._onCommitFinished(src);
         }
     }
 

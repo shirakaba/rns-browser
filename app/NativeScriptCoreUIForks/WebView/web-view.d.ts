@@ -23,6 +23,11 @@
       * String value used when hooking to loadStarted event.
       */
      public static loadStartedEvent: string;
+
+     /**
+      * String value used when hooking to commitFinished event.
+      */
+     public static commitFinishedEvent: string;
  
      /**
       * String value used when hooking to loadFinished event.
@@ -86,6 +91,11 @@
       * Raised when a loadFinished event occurs.
       */
      on(event: "loadFinished", callback: (args: LoadEventData) => void, thisArg?: any);
+
+     /**
+      * Raised when a loadCommitted event occurs.
+      */
+     on(event: "loadCommitted", callback: (args: LoadEventData) => void, thisArg?: any);
  
      /**
       * Raised when a loadStarted event occurs.
