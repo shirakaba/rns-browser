@@ -2,11 +2,16 @@ import * as React from "react";
 import { createSlice } from "@reduxjs/toolkit";
 import { WebView } from "tns-core-modules/ui/web-view/web-view";
 
+/* Not strictly the most correct typing for an action, but accurate enough to work with*/
+type Action<P, T = { type: string }> = T & {
+    payload: P;
+};
 type WebViewId = string;
 export const webViews = new Map<WebViewId, React.RefObject<WebView>>([
     ["tab0", React.createRef<WebView>()]
 ]);
 export type TabStateRecord = Record<string, { url: string, loadProgress: number }>;
+
 
 const initialPage: string = "https://www.birchlabs.co.uk";
 
@@ -26,12 +31,12 @@ const navigationSlice = createSlice({
         /**
          * Update the singleton URL bar's displayed text (does not launch a query).
          */
-        updateUrlBarText(state, action: { payload: string }) {
+        updateUrlBarText(state, action: Action<string>) {
             // console.log(`[navigationState.ts] updateUrlBarText action ${JSON.stringify(action)} and state`, state);
             const text = action.payload;
             state.urlBarText = text;
         },
-        setUrlOnWebView(state, action: { payload: { url: string, tab?: string } }) {
+        setUrlOnWebView(state, action: Action<{ url: string, tab?: string }>) {
             // console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.url}"`);
             const { url, tab = state.activeTab } = action.payload;
             state.tabs[tab] = {
@@ -39,15 +44,15 @@ const navigationSlice = createSlice({
                 loadProgress: 0,
             };
         },
-        setProgressOnWebView(state, action: { payload: { progress: number, tab?: string } }) {
+        setProgressOnWebView(state, action: Action<{ progress: number, tab?: string }>) {
             // console.log(`[setUrlOnWebView] setting progress for activeTab "${state.activeTab}" as: "${action.payload.progress}"`);
             const { progress, tab = state.activeTab } = action.payload;
             state.tabs[tab].loadProgress = progress;
         },
-        goBackOnWebView(state, action){
+        goBackOnWebView(state, action: Action<void>){
 
         },
-        goForwardOnWebView(state, action){
+        goForwardOnWebView(state, action: Action<void>){
 
         },
     }
