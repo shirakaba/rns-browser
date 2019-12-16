@@ -25,6 +25,7 @@ const navigationSlice = createSlice({
             // console.log(`[navigationState.ts] updateUrlBarText action ${JSON.stringify(action)} and state`, state);
             const text = action.payload;
             state.urlBarText = text;
+            state.tabStateRecord[state.activeTab].url = text;
         },
         setUrlOnActiveWebView(state, action) {
             // Trigger side-effects, like searching query or visiting site?
