@@ -97,7 +97,7 @@ class WKNavigationDelegateImpl extends NSObject
             if (webView.URL) {
                 src = webView.URL.absoluteString;
             }
-            owner._onCommitFinished(src);
+            owner._onLoadCommitted(src);
         }
     }
 

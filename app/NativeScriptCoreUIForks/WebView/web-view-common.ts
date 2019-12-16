@@ -14,7 +14,7 @@ export abstract class WebViewBase extends ContainerView implements WebViewDefini
     public static progressEvent = "progress";
     public static loadStartedEvent = "loadStarted";
     public static loadFinishedEvent = "loadFinished";
-    public static commitFinishedEvent = "commitFinished";
+    public static loadCommittedEvent = "loadCommitted";
 
     public src: string;
     public progress: number = 0;
@@ -31,9 +31,9 @@ export abstract class WebViewBase extends ContainerView implements WebViewDefini
         this.notify(args);
     }
 
-    public _onCommitFinished(url: string, error?: string) {
+    public _onLoadCommitted(url: string, error?: string) {
         let args = <LoadEventData>{
-            eventName: WebViewBase.commitFinishedEvent,
+            eventName: WebViewBase.loadCommittedEvent,
             object: this,
             url: url,
             navigationType: undefined,

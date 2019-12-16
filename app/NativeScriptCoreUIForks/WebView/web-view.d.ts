@@ -25,9 +25,9 @@
      public static loadStartedEvent: string;
 
      /**
-      * String value used when hooking to commitFinished event.
+      * String value used when hooking to loadCommittedEvent event.
       */
-     public static commitFinishedEvent: string;
+     public static loadCommittedEvent: string;
  
      /**
       * String value used when hooking to loadFinished event.
