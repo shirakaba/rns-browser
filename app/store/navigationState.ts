@@ -18,15 +18,16 @@ const navigationSlice = createSlice({
                 loadProgress: 0,
             }
         },
-        urlBarText: "",
-        urlBarLoadProgress: 0,
+        urlBarText: ""
     },
     reducers: {
+        /**
+         * Update the singleton URL bar's displayed text (does not launch a query).
+         */
         updateUrlBarText(state, action) {
             // console.log(`[navigationState.ts] updateUrlBarText action ${JSON.stringify(action)} and state`, state);
             const text = action.payload;
             state.urlBarText = text;
-            state.tabStateRecord[state.activeTab].url = text;
         },
         setUrlOnActiveWebView(state, action) {
             // Trigger side-effects, like searching query or visiting site?
@@ -40,7 +41,6 @@ const navigationSlice = createSlice({
             // Trigger side-effects, like searching query or visiting site?
             console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.text}"`);
             const progress = action.payload;
-            state.urlBarLoadProgress = progress;
             state.tabStateRecord[state.activeTab].loadProgress = progress;
         },
         goBackOnActiveWebView(state, action){

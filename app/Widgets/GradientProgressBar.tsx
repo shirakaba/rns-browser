@@ -18,14 +18,11 @@ class GradientProgressBar extends React.Component<GradientProgressBarProps, Stat
     render(){
         const { progress, ...rest } = this.props;
 
-        const opacityStyle = progress === 1 ? { } : { opacity: 1 };
-
         return (
             <$Progress
                 value={progress}
                 maxValue={1}
                 opacity={progress === 1 ? 0 : 1}
-                // {...opacityStyle}
                 // This is declared in app/components/AppContainer.scss
                 className={progress === 1 ? "fade-out-anim" : ""}
                 {...rest}
