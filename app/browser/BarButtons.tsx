@@ -2,7 +2,7 @@ import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $Button } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
-import { goBackOnWebView, goForwardOnWebView } from "~/store/navigationState";
+import { goBackOnWebView, goForwardOnWebView, reloadWebView, stopWebView } from "~/store/navigationState";
 import { connect } from "react-redux";
 import { WholeStoreState } from "~/store/store";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
@@ -45,6 +45,7 @@ class ForwardButton extends React.Component<ForwardButtonProps & ButtonComponent
     private readonly onTap = () => {
         this.props.goForwardOnWebView();
     };
+
     render(){
         const { ...rest } = this.props;
         return (
@@ -66,13 +67,29 @@ export const ForwardButtonConnected = connect(
     },
 )(ForwardButton);
 
-class StopReloadButton extends React.Component<{ loading: boolean } & ButtonComponentProps, {}> {
+interface StopReloadButtonProps {
+    loading: boolean,
+
+    stopWebView: typeof stopWebView,
+    reloadWebView: typeof reloadWebView,
+}
+
+class StopReloadButton extends React.Component<StopReloadButtonProps & ButtonComponentProps, {}> {
+    private readonly onTap = () => {
+        if(this.props.loading){
+            this.props.stopWebView();
+        } else {
+            this.props.reloadWebView();
+        }
+    };
+
     render(){
         const { loading, ...rest } = this.props;
 
         return (
             <ToolbarButton
                 {...rest}
+                onTap={this.onTap}
                 text={
                     loading ?
                     // Stop (cross symbol)
@@ -86,10 +103,15 @@ class StopReloadButton extends React.Component<{ loading: boolean } & ButtonComp
 }
 export const StopReloadButtonConnected = connect(
     (wholeStoreState: WholeStoreState) => {
-        return {};
+        const { activeTab, tabs } = wholeStoreState.navigation;
+        // console.log(`[StopReloadButtonConnected] wholeStoreState.navigation`, wholeStoreState.navigation);
+        return {
+            loading: tabs[activeTab].loadProgress !== 1,
+        };
     },
     {
-        // TODO
+        reloadWebView,
+        stopWebView,
     },
 )(StopReloadButton);
 

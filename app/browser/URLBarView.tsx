@@ -99,7 +99,7 @@ export class URLBarView extends React.Component<Props, State>{
                 >
                     <BackButtonConnected backgroundColor={buttonBackgroundColor}/>
                     <ForwardButtonConnected backgroundColor={buttonBackgroundColor}/>
-                    <StopReloadButtonConnected backgroundColor={buttonBackgroundColor} loading={false}/>
+                    <StopReloadButtonConnected backgroundColor={buttonBackgroundColor}/>
                     {/* AKA locationView. */}
                     <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                     <TabsButtonConnected backgroundColor={buttonBackgroundColor}/>

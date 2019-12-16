@@ -55,6 +55,12 @@ const navigationSlice = createSlice({
         goForwardOnWebView(state, action: Action<void>){
 
         },
+        reloadWebView(state, action: Action<void>){
+
+        },
+        stopWebView(state, action: Action<void>){
+
+        },
     }
 });
 
@@ -84,7 +90,7 @@ export function submitUrlBarTextToWebView(url: string, tab?: string) {
             return Promise.resolve();
         }
 
-        console.error(`[setUrlOnWebView] Setting URL on webView for chosenTab "${chosenTab}" as: ${url}`);
+        console.log(`[setUrlOnWebView] Setting URL on webView for chosenTab "${chosenTab}" as: ${url}`);
         webView.src = url;
 
         console.log(`[setUrlOnWebView] Dispatching action to set url for chosenTab "${chosenTab}" as: "${url}"`);
@@ -100,7 +106,7 @@ export function goBackOnWebView(tab?: string) {
             return Promise.resolve();
         }
 
-        console.error(`[goBackOnWebView] Calling goBack() on webView for chosenTab "${chosenTab}" while canGoBack is: ${webView.canGoBack}`);
+        console.log(`[goBackOnWebView] Calling goBack() on webView for chosenTab "${chosenTab}" while canGoBack is: ${webView.canGoBack}`);
         webView.goBack();
 
         return dispatch(navigationSlice.actions.goBackOnWebView());
@@ -115,10 +121,40 @@ export function goForwardOnWebView(tab?: string) {
             return Promise.resolve();
         }
 
-        console.error(`[goBackOnWebView] Calling goForward() on webView for chosenTab "${chosenTab}" while canGoForward is: ${webView.canGoForward}`);
+        console.log(`[goForwardOnWebView] Calling goForward() on webView for chosenTab "${chosenTab}" while canGoForward is: ${webView.canGoForward}`);
         webView.goForward();
 
         return dispatch(navigationSlice.actions.goForwardOnWebView());
     };
 }
 
+
+export function reloadWebView(tab?: string) {
+    return function(dispatch, getState) {
+        const chosenTab: string = tab || getState().navigation.activeTab;
+        const webView = getWebView(chosenTab);
+        if(!webView){
+            return Promise.resolve();
+        }
+
+        console.log(`[goBackOnWebView] Calling refresh() on webView for chosenTab "${chosenTab}".`);
+        webView.reload();
+
+        return dispatch(navigationSlice.actions.reloadWebView());
+    };
+}
+
+export function stopWebView(tab?: string) {
+    return function(dispatch, getState) {
+        const chosenTab: string = tab || getState().navigation.activeTab;
+        const webView = getWebView(chosenTab);
+        if(!webView){
+            return Promise.resolve();
+        }
+
+        console.log(`[stopWebView] Calling refresh() on webView for chosenTab "${chosenTab}".`);
+        webView.stopLoading();
+
+        return dispatch(navigationSlice.actions.stopWebView());
+    };
+}
