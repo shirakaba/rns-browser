@@ -21,7 +21,7 @@ class AppContainer extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            orientation: "unknown",
+            orientation: Application.orientation(),
         };
     }
 
