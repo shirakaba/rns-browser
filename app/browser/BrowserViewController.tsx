@@ -12,8 +12,9 @@ import { ButtonComponentProps } from "react-nativescript/dist/components/Button"
 import { LoadEventData } from "tns-core-modules/ui/web-view/web-view";
 import { connect } from "react-redux";
 import { WholeStoreState } from "~/store/store";
-import { webViews, updateUrlBarText } from "~/store/navigationState";
+import { webViews, updateUrlBarText, TabStateRecord } from "~/store/navigationState";
 import { BetterWebView } from "~/components/BetterWebView";
+import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
 
 const BrowserViewControllerUX = {
     ShowHeaderTapAreaHeight: 0,
@@ -76,7 +77,7 @@ class WebViewContainerBackdrop extends React.Component<StackLayoutComponentProps
 
 interface WebViewContainerProps {
     activeTab: string,
-    tabToUrlMap: Record<string, string>,
+    tabStateRecord: TabStateRecord,
     updateUrlBarText: typeof updateUrlBarText,
 }
 
@@ -90,16 +91,16 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
         const { error, eventName, url, navigationType, object } = args;
         const wv: WebView = object as WebView;
         console.log(`[WebView onLoadStarted] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
-        // if(!error){
-        //     // FIXME: NativeScript seems to fire loading events on iframes, so wv.src is what we want, rather than args.url.
-        //     this.props.updateUrlBarText(url);
-        // }
+        
+        // TODO: handle errors
     };
 
     private readonly onLoadCommitted = (args: LoadEventData) => {
         const { error, eventName, url, navigationType, object } = args;
         const wv: WebView = object as WebView;
         console.log(`[WebView onLoadCommitted] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
+
+        // TODO: handle errors
 
         if(!error && isIOS){
             /* iOS seems to fire loading events on the non-main frame, so onLoadCommitted event is the best one on which to update the main-frame URL.
@@ -113,14 +114,24 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
         const wv: WebView = object as WebView;
         console.log(`[WebView onLoadFinished] error ${error}, eventName ${eventName}, url ${url} (vs. src ${wv.src}), navigationType ${navigationType}`);
 
+        // TODO: handle errors
+
         if(!error && isAndroid){
             /* TODO: check whether Android fires onLoadFinished at sensible moments for updating the URL bar text. */
             this.props.updateUrlBarText(url);
         }
     };
 
+    private readonly onProgress = (args: ProgressEventData) => {
+        const { eventName, progress, object } = args;
+        const wv: WebView = object as WebView;
+        console.log(`[WebView onLoadFinished] eventName ${eventName}, progress ${progress}`);
+
+        // TODO: update progressbar correspondingly.
+    };
+
     render(){
-        const { activeTab, tabToUrlMap, children, ...rest } = this.props;
+        const { activeTab, tabStateRecord, children, ...rest } = this.props;
 
         return (
             // UIView()
@@ -136,9 +147,10 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
                     onLoadStarted={this.onLoadStarted}
                     onLoadCommitted={this.onLoadCommitted}
                     onLoadFinished={this.onLoadFinished}
+                    onProgress={this.onProgress}
                     width={{ value: 100, unit: "%" }}
                     height={{ value: 100, unit: "%" }}
-                    src={"https://www.birchlabs.co.uk"}
+                    src={tabStateRecord[activeTab].url}
                 />
             </$StackLayout>
         );
@@ -150,7 +162,7 @@ const WebViewContainerConnected = connect(
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
             activeTab: wholeStoreState.navigation.activeTab,
-            tabToUrlMap: wholeStoreState.navigation.tabToUrlMap,
+            tabStateRecord: wholeStoreState.navigation.tabStateRecord,
         };
     },
     {

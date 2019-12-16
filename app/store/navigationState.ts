@@ -6,13 +6,17 @@ type WebViewId = string;
 export const webViews = new Map<WebViewId, React.RefObject<WebView>>([
     ["tab0", React.createRef<WebView>()]
 ]);
+export type TabStateRecord = Record<string, { url: string, loadProgress: number }>;
 
 const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
         activeTab: "tab0",
-        tabToUrlMap: {
-            tab0: "https://www.birchlabs.co.uk"
+        tabStateRecord: {
+            tab0: {
+                url: "https://www.birchlabs.co.uk",
+                loadProgress: 0,
+            }
         },
         urlBarText: "",
     },
@@ -25,7 +29,10 @@ const navigationSlice = createSlice({
         setUrlOnActiveWebView(state, action) {
             // Trigger side-effects, like searching query or visiting site?
             console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.text}"`);
-            state.tabToUrlMap[state.activeTab] = action.payload.text;
+            state.tabStateRecord[state.activeTab] = {
+                url: action.payload.text,
+                loadProgress: 0,
+            };
         },
         goBackOnActiveWebView(state, action){
 

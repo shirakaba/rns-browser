@@ -7,7 +7,7 @@ import { ViewComponentProps, RCTView } from "react-nativescript/dist/components/
 import { updateListener } from "react-nativescript/dist/client/EventHandling";
 import { EventData } from "tns-core-modules/data/observable/observable";
 import { register } from "react-nativescript/dist/client/ElementRegistry";
-import { WebView } from "../NativeScriptCoreUIForks/WebView";
+import { WebView, ProgressEventData } from "../NativeScriptCoreUIForks/WebView";
 import { isIOS, isAndroid } from "tns-core-modules/ui/page/page";
 
 /**
@@ -31,38 +31,12 @@ interface Props {
      * @available ios
      */
     onLoadCommitted?: (args: NarrowedLoadEventData) => void;
+    /**
+     * Added to BetterWebView.
+     * @available ios
+     */
+    onProgress?: (args: ProgressEventData) => void;
 }
-
-// const MyEstimatedProgressHandlerImpl = (NSObject as any).extend(
-//     {
-//         get wv(): WKWebView|null { return this._wv; },
-//         set wv(x) { this._wv = x; },
-//         // override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//         // observeValueForKeyPathOfObjectChangeContext(keyPath: string, object: any, change: NSDictionary<string, any>, context: interop.Pointer | interop.Reference<any>): void;
-//         observeValueForKeyPathOfObjectChangeContext: function(keyPath: string, object: any, change: NSDictionary<string, any>, context: interop.Pointer | interop.Reference<any>){
-//             if(!this.wv){
-//                 console.log(`[MyEstimatedProgressHandlerImpl] WebView wasn't registered.`);
-//                 return;
-//             }
-//             if(keyPath !== "estimatedProgress"){
-//                 console.log(`[MyEstimatedProgressHandlerImpl] ignoring keyPath: ${keyPath}`);
-//                 return;
-//             }
-//             console.log(`[MyEstimatedProgressHandlerImpl] got keyPath: ${keyPath} and estimatedProgress: ${this.wv ? this.wv.estimatedProgress : null}`);
-//         }
-//     },
-//     {
-//         name: "MyEstimatedProgressHandlerImpl",
-//         protocols: [],
-//         exposedMethods: {
-//             observeValueForKeyPathOfObjectChangeContext: {
-//                 returns: interop.Pointer,
-//                 params: [NSString]
-//             }
-//         }
-//     }
-// );
-
 
 export type WebViewComponentProps<
     E extends NativeScriptUIElement = NativeScriptUIElement
@@ -77,64 +51,6 @@ class _BetterWebView<
     S extends {},
     E extends NativeScriptUIElement = NativeScriptUIElement
 > extends RCTView<P, S, E> {
-    // private progressObserver = new MyEstimatedProgressHandlerImpl();
-
-    private readonly privateOnLoaded = () => {
-        console.warn(`[BetterWebView] privateOnLoaded.`);
-        if(isIOS){
-            const wv = this.getCurrentRef();
-            if(!wv){
-                console.warn(`wv was unpopulated.`);
-                return;
-            }
-            const nativeWv: WKWebView = wv.ios;
-            if(!nativeWv){
-                console.warn(`Unable to get access to nativeWv.`);
-                return;
-            }
-            // this.progressObserver.wv = nativeWv;
-            // /* webView!.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil) */
-            // nativeWv.addObserverForKeyPathOptionsContext(
-            //     this.progressObserver,
-            //     "estimatedProgress",
-            //     NSKeyValueObservingOptions.New,
-            //     null
-            // );
-        } else if(isAndroid){
-            // TODO
-        } else {
-            // Unsupported platform
-        }
-    };
-
-    private readonly privateOnUnloaded = () => {
-        console.warn(`[BetterWebView] privateOnUnloaded.`);
-        if(isIOS){
-            const wv = this.myRef.current;
-            if(!wv){
-                console.warn(`wv was unpopulated.`);
-                return;
-            }
-            const nativeWv: WKWebView = wv.ios;
-            if(!nativeWv){
-                console.warn(`Unable to get access to nativeWv.`);
-                return;
-            }
-            // /* webView!.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil) */
-            // nativeWv.removeObserverForKeyPathContext(
-            //     this.progressObserver,
-            //     "estimatedProgress",
-            //     null
-            // );
-            // this.progressObserver.wv = null;
-            // this.progressObserver = null;
-        } else if(isAndroid){
-            // TODO
-        } else {
-            // Unsupported platform
-        }
-    };
-
     /**
      *
      * @param attach true: attach; false: detach; null: update
@@ -148,8 +64,7 @@ class _BetterWebView<
             updateListener(node, "loadCommitted", this.props.onLoadCommitted, nextProps.onLoadCommitted);
             updateListener(node, "loadStarted", this.props.onLoadStarted, nextProps.onLoadStarted);
 
-            updateListener(node, "loaded", this.privateOnLoaded, this.privateOnLoaded);
-            updateListener(node, "unloaded", this.privateOnUnloaded, this.privateOnUnloaded);
+            updateListener(node, "progress", this.props.onProgress, nextProps.onProgress);
         } else {
             const method = (attach ? node.on : node.off).bind(node);
             if (this.props.onUrlChange) method("urlChange", this.props.onUrlChange);
@@ -157,8 +72,7 @@ class _BetterWebView<
             if (this.props.onLoadCommitted) method("loadCommitted", this.props.onLoadCommitted);
             if (this.props.onLoadStarted) method("loadStarted", this.props.onLoadStarted);
             
-            if (this.privateOnLoaded) method("loaded", this.privateOnLoaded);
-            if (this.privateOnUnloaded) method("unloaded", this.privateOnUnloaded);
+            if (this.props.onProgress) method("progress", this.props.onProgress);
         }
     }
 
@@ -169,6 +83,7 @@ class _BetterWebView<
             onLoadStarted,
             onLoadCommitted,
             onLoadFinished,
+            onProgress,
 
             onLoaded,
             onUnloaded,
