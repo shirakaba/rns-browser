@@ -20,6 +20,7 @@ class WKNavigationDelegateImpl extends NSObject
     }
     private _owner: WeakRef<WebView>;
 
+    // Reference: https://github.com/NativeScript/ios-runtime/issues/742
     public observeValueForKeyPathOfObjectChangeContext(keyPath:string, object:any, change:any, context:any) {
         const owner = this._owner.get();
         if (!owner) return;        
