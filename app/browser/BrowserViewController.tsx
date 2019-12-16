@@ -12,7 +12,7 @@ import { ButtonComponentProps } from "react-nativescript/dist/components/Button"
 import { LoadEventData } from "tns-core-modules/ui/web-view/web-view";
 import { connect } from "react-redux";
 import { WholeStoreState } from "~/store/store";
-import { webViews, updateUrlBarText, TabStateRecord, setProgressOnActiveWebView } from "~/store/navigationState";
+import { webViews, updateUrlBarText, TabStateRecord, setProgressOnWebView } from "~/store/navigationState";
 import { BetterWebView } from "~/components/BetterWebView";
 import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
 
@@ -79,7 +79,7 @@ interface WebViewContainerProps {
     activeTab: string,
     tabStateRecord: TabStateRecord,
     updateUrlBarText: typeof updateUrlBarText,
-    setProgressOnActiveWebView: typeof setProgressOnActiveWebView,
+    setProgressOnWebView: typeof setProgressOnWebView,
 }
 
 class WebViewContainer extends React.Component<WebViewContainerProps & StackLayoutComponentProps, { }> {
@@ -128,7 +128,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
         const wv: WebView = object as WebView;
         console.log(`[WebView onLoadFinished] eventName ${eventName}, progress ${progress}`);
 
-        this.props.setProgressOnActiveWebView(progress);
+        this.props.setProgressOnWebView({ progress, tab: this.props.activeTab });
     };
 
     render(){
@@ -168,7 +168,7 @@ const WebViewContainerConnected = connect(
     },
     {
         updateUrlBarText,
-        setProgressOnActiveWebView,
+        setProgressOnWebView,
     },
 )(WebViewContainer);
 

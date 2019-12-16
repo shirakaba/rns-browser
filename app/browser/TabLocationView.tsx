@@ -8,7 +8,7 @@ import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 import { FlexboxLayoutComponentProps } from "react-nativescript/dist/components/FlexboxLayout";
 import { connect } from 'react-redux';
-import { updateUrlBarText, submitUrlBarTextToActiveWebView } from "~/store/navigationState";
+import { updateUrlBarText, submitUrlBarTextToWebView } from "~/store/navigationState";
 import { WholeStoreState } from "~/store/store";
 
 interface Props {
@@ -42,11 +42,12 @@ class LockImageView extends React.Component<{ locked: boolean } & ButtonComponen
 }
 
 interface DisplayTextFieldProps {
+    activeTab: string,
     urlBarText: string,
 
     updateUrlBarText: typeof updateUrlBarText,
     // setUrlOnWebView: typeof setUrlOnWebView,
-    submitUrlBarTextToActiveWebView: typeof submitUrlBarTextToActiveWebView,
+    submitUrlBarTextToWebView: typeof submitUrlBarTextToWebView,
 }
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L319
@@ -62,7 +63,7 @@ class DisplayTextField extends React.Component<DisplayTextFieldProps & TextField
         const textField: TextField = args.object as TextField;
         // console.log(`[onReturnPress] ${textField.text}`);
 
-        this.props.submitUrlBarTextToActiveWebView(textField.text);
+        this.props.submitUrlBarTextToWebView(textField.text, this.props.activeTab);
     };
 
     render(){
@@ -88,15 +89,17 @@ class DisplayTextField extends React.Component<DisplayTextFieldProps & TextField
 const DisplayTextFieldConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
-        const { activeTab, tabStateRecord } = wholeStoreState.navigation;
+        const { activeTab, tabStateRecord, urlBarText } = wholeStoreState.navigation;
 
         return {
-            urlBarText: tabStateRecord[activeTab].url,
+            activeTab,
+            // urlBarText: tabStateRecord[activeTab].url,
+            urlBarText,
         };
     },
     {
         updateUrlBarText,
-        submitUrlBarTextToActiveWebView,
+        submitUrlBarTextToWebView,
     },
 )(DisplayTextField);
 

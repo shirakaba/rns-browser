@@ -8,61 +8,62 @@ export const webViews = new Map<WebViewId, React.RefObject<WebView>>([
 ]);
 export type TabStateRecord = Record<string, { url: string, loadProgress: number }>;
 
+const initialPage: string = "https://www.birchlabs.co.uk";
+
 const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
         activeTab: "tab0",
         tabStateRecord: {
             tab0: {
-                url: "https://www.birchlabs.co.uk",
+                url: initialPage,
                 loadProgress: 0,
             }
         },
-        urlBarText: ""
+        urlBarText: initialPage
     },
     reducers: {
         /**
          * Update the singleton URL bar's displayed text (does not launch a query).
          */
-        updateUrlBarText(state, action) {
+        updateUrlBarText(state, action: { payload: string }) {
             // console.log(`[navigationState.ts] updateUrlBarText action ${JSON.stringify(action)} and state`, state);
             const text = action.payload;
             state.urlBarText = text;
         },
-        setUrlOnActiveWebView(state, action) {
-            // Trigger side-effects, like searching query or visiting site?
-            console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.text}"`);
-            state.tabStateRecord[state.activeTab] = {
-                url: action.payload.text,
+        setUrlOnWebView(state, action: { payload: { url: string, tab?: string } }) {
+            // console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.url}"`);
+            const { url, tab = state.activeTab } = action.payload;
+            state.tabStateRecord[tab] = {
+                url,
                 loadProgress: 0,
             };
         },
-        setProgressOnActiveWebView(state, action) {
-            // Trigger side-effects, like searching query or visiting site?
-            console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.text}"`);
-            const progress = action.payload;
-            state.tabStateRecord[state.activeTab].loadProgress = progress;
+        setProgressOnWebView(state, action: { payload: { progress: number, tab?: string } }) {
+            // console.log(`[setUrlOnWebView] setting progress for activeTab "${state.activeTab}" as: "${action.payload.progress}"`);
+            const { progress, tab = state.activeTab } = action.payload;
+            state.tabStateRecord[tab].loadProgress = progress;
         },
-        goBackOnActiveWebView(state, action){
+        goBackOnWebView(state, action){
 
         },
-        goForwardOnActiveWebView(state, action){
+        goForwardOnWebView(state, action){
 
         },
     }
 });
 
-export const { updateUrlBarText, setProgressOnActiveWebView } = navigationSlice.actions;
+export const { updateUrlBarText, setProgressOnWebView } = navigationSlice.actions;
 export const navigationSliceReducer = navigationSlice.reducer;
 
-function getActiveWebView(activeTab: string){
-    const webViewRef = webViews.get(activeTab);
+function getWebView(tab: string){
+    const webViewRef = webViews.get(tab);
     if(!webViewRef){
-        console.error(`Unable to find webViewRef for activeTab "${activeTab}".`);
+        console.error(`Unable to find webViewRef for tab "${tab}".`);
         return null;
     }
     if(!webViewRef.current){
-        console.error(`webViewRef for activeTab "${activeTab}" wasn't populated.`);
+        console.error(`webViewRef for tab "${tab}" wasn't populated.`);
         return null;
     }
 
@@ -70,49 +71,49 @@ function getActiveWebView(activeTab: string){
 }
 
 /* This is a thunk wrapping the "setUrlOnWebView" action. */
-export function submitUrlBarTextToActiveWebView(url: string) {
+export function submitUrlBarTextToWebView(url: string, tab?: string) {
     return function(dispatch, getState) {
-        const activeTab: string = getState().navigation.activeTab;
-        const webView = getActiveWebView(activeTab);
+        const chosenTab: string = tab || getState().navigation.activeTab;
+        const webView = getWebView(chosenTab);
         if(!webView){
             return Promise.resolve();
         }
 
-        console.error(`[setUrlOnWebView] Setting URL on webView for activeTab "${activeTab}" as: ${url}`);
+        console.error(`[setUrlOnWebView] Setting URL on webView for chosenTab "${chosenTab}" as: ${url}`);
         webView.src = url;
 
-        console.log(`[setUrlOnWebView] Dispatching action to set url for activeTab "${activeTab}" as: "${url}"`);
-        return dispatch(navigationSlice.actions.setUrlOnActiveWebView({ text: url }));
+        console.log(`[setUrlOnWebView] Dispatching action to set url for chosenTab "${chosenTab}" as: "${url}"`);
+        return dispatch(navigationSlice.actions.setUrlOnWebView({ url, tab: chosenTab }));
     };
 }
 
-export function goBackOnActiveWebView() {
+export function goBackOnWebView(tab?: string) {
     return function(dispatch, getState) {
-        const activeTab: string = getState().navigation.activeTab;
-        const webView = getActiveWebView(activeTab);
+        const chosenTab: string = tab || getState().navigation.activeTab;
+        const webView = getWebView(chosenTab);
         if(!webView){
             return Promise.resolve();
         }
 
-        console.error(`[goBackOnActiveWebView] Calling goBack() on webView for activeTab "${activeTab}" while canGoBack is: ${webView.canGoBack}`);
+        console.error(`[goBackOnWebView] Calling goBack() on webView for chosenTab "${chosenTab}" while canGoBack is: ${webView.canGoBack}`);
         webView.goBack();
 
-        return dispatch(navigationSlice.actions.goBackOnActiveWebView());
+        return dispatch(navigationSlice.actions.goBackOnWebView());
     };
 }
 
-export function goForwardOnActiveWebView() {
+export function goForwardOnWebView(tab?: string) {
     return function(dispatch, getState) {
-        const activeTab: string = getState().navigation.activeTab;
-        const webView = getActiveWebView(activeTab);
+        const chosenTab: string = tab || getState().navigation.activeTab;
+        const webView = getWebView(chosenTab);
         if(!webView){
             return Promise.resolve();
         }
 
-        console.error(`[goBackOnActiveWebView] Calling goForward() on webView for activeTab "${activeTab}" while canGoForward is: ${webView.canGoForward}`);
+        console.error(`[goBackOnWebView] Calling goForward() on webView for chosenTab "${chosenTab}" while canGoForward is: ${webView.canGoForward}`);
         webView.goForward();
 
-        return dispatch(navigationSlice.actions.goForwardOnActiveWebView());
+        return dispatch(navigationSlice.actions.goForwardOnWebView());
     };
 }
 

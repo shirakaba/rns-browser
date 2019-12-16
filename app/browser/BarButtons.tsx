@@ -2,7 +2,7 @@ import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $Button } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
-import { goBackOnActiveWebView, goForwardOnActiveWebView } from "~/store/navigationState";
+import { goBackOnWebView, goForwardOnWebView } from "~/store/navigationState";
 import { connect } from "react-redux";
 import { WholeStoreState } from "~/store/store";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
@@ -10,11 +10,11 @@ import { ButtonComponentProps } from "react-nativescript/dist/components/Button"
 // From URLBarView
 
 interface BackButtonProps {
-    goBackOnActiveWebView: typeof goBackOnActiveWebView,
+    goBackOnWebView: typeof goBackOnWebView,
 }
 class BackButton extends React.Component<BackButtonProps & ButtonComponentProps, {}> {
     private readonly onTap = () => {
-        this.props.goBackOnActiveWebView();
+        this.props.goBackOnWebView();
     };
 
     render(){
@@ -34,16 +34,16 @@ export const BackButtonConnected = connect(
         return {};
     },
     {
-        goBackOnActiveWebView,
+        goBackOnWebView,
     },
 )(BackButton);
 
 interface ForwardButtonProps {
-    goForwardOnActiveWebView: typeof goForwardOnActiveWebView,
+    goForwardOnWebView: typeof goForwardOnWebView,
 }
 class ForwardButton extends React.Component<ForwardButtonProps & ButtonComponentProps, {}> {
     private readonly onTap = () => {
-        this.props.goForwardOnActiveWebView();
+        this.props.goForwardOnWebView();
     };
     render(){
         const { ...rest } = this.props;
@@ -62,7 +62,7 @@ export const ForwardButtonConnected = connect(
         return {};
     },
     {
-        goForwardOnActiveWebView,
+        goForwardOnWebView,
     },
 )(ForwardButton);
 

@@ -1,10 +1,5 @@
 import * as React from "react";
-import { WebView, ActionBar } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout } from "react-nativescript";
-import { ToolbarButton } from "./ToolbarButton";
-import { goBackOnActiveWebView, goForwardOnActiveWebView } from "~/store/navigationState";
-import { connect } from "react-redux";
-import { WholeStoreState } from "~/store/store";
+import { $FlexboxLayout } from "react-nativescript";
 import { BackButtonConnected, ForwardButtonConnected, MenuButtonConnected, SearchButtonConnected, TabsButtonConnected, } from "./BarButtons";
 
 interface Props {
