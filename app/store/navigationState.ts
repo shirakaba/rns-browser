@@ -19,6 +19,7 @@ const navigationSlice = createSlice({
             }
         },
         urlBarText: "",
+        urlBarLoadProgress: 0,
     },
     reducers: {
         updateUrlBarText(state, action) {
@@ -35,6 +36,13 @@ const navigationSlice = createSlice({
                 loadProgress: 0,
             };
         },
+        setProgressOnActiveWebView(state, action) {
+            // Trigger side-effects, like searching query or visiting site?
+            console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.text}"`);
+            const progress = action.payload;
+            state.urlBarLoadProgress = progress;
+            state.tabStateRecord[state.activeTab].loadProgress = progress;
+        },
         goBackOnActiveWebView(state, action){
 
         },
@@ -44,7 +52,7 @@ const navigationSlice = createSlice({
     }
 });
 
-export const { updateUrlBarText } = navigationSlice.actions;
+export const { updateUrlBarText, setProgressOnActiveWebView } = navigationSlice.actions;
 export const navigationSliceReducer = navigationSlice.reducer;
 
 function getActiveWebView(activeTab: string){

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WebView, ActionBar, StackLayout } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout } from "react-nativescript";
-import { GradientProgressBar } from "../Widgets/GradientProgressBar";
+import { GradientProgressBarConnected } from "../Widgets/GradientProgressBar";
 import { ToolbarButton } from "./ToolbarButton";
 import { AutocompleteTextField } from "~/Widgets/AutocompleteTextField";
 import { TabLocationView } from "./TabLocationView";
@@ -125,7 +125,7 @@ export class URLBarView extends React.Component<Props, State>{
         return (
             <$StackLayout orientation={"vertical"}>
                 {stackContents}
-                <GradientProgressBar
+                <GradientProgressBarConnected
                     width={{ value: 100, unit: "%" }}
                 />
             </$StackLayout>
