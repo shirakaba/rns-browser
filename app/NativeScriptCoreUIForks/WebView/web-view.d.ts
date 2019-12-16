@@ -3,7 +3,7 @@
  * @module "ui/web-view"
  */ /** */
 
- import { View, Property, EventData } from "@nativescript/core/ui/web-view/../core/view";
+ import { View, Property, EventData } from "@nativescript/core/ui/core/view";
 
  /**
   * Represents the observable property backing the Url property of each WebView instance.
@@ -23,11 +23,6 @@
       * String value used when hooking to loadStarted event.
       */
      public static loadStartedEvent: string;
- 
-     /**
-      * String value used when hooking to loadCommitted event.
-      */
-     public static loadCommittedEvent: string;
  
      /**
       * String value used when hooking to loadFinished event.
@@ -93,11 +88,6 @@
      on(event: "loadFinished", callback: (args: LoadEventData) => void, thisArg?: any);
  
      /**
-      * Raised when a loadCommitted event occurs.
-      */
-     on(event: "loadCommitted", callback: (args: LoadEventData) => void, thisArg?: any);
- 
-     /**
       * Raised when a loadStarted event occurs.
       */
      on(event: "loadStarted", callback: (args: LoadEventData) => void, thisArg?: any);
@@ -122,4 +112,3 @@
       */
      error: string;
  }
- 
