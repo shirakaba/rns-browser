@@ -9,6 +9,10 @@ export interface LoadEventData extends EventData {
     error: string;
 }
 
+export interface ProgressEventData extends EventData {
+    progress: number;
+}
+
 export interface WebViewClient {
     new(owner: WebView): any /* android.webkit.WebViewClient */;
 }

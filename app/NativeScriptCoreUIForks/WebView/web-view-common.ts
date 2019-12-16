@@ -1,5 +1,5 @@
 import { WebView as WebViewDefinition } from ".";
-import { LoadEventData, NavigationType } from "./web-view-interfaces";
+import { LoadEventData, NavigationType, ProgressEventData } from "./web-view-interfaces";
 import { ContainerView, Property, EventData, CSSType } from "@nativescript/core/ui/core/view";
 import { File, knownFolders, path } from "@nativescript/core/ui/web-view/../../file-system";
 
@@ -11,11 +11,13 @@ export const srcProperty = new Property<WebViewBase, string>({ name: "src" });
 
 @CSSType("WebView")
 export abstract class WebViewBase extends ContainerView implements WebViewDefinition {
+    public static progressEvent = "progress";
     public static loadStartedEvent = "loadStarted";
     public static loadFinishedEvent = "loadFinished";
     public static commitFinishedEvent = "commitFinished";
 
     public src: string;
+    public progress: number = 0;
 
     public _onLoadFinished(url: string, error?: string) {
         let args = <LoadEventData>{
@@ -47,6 +49,17 @@ export abstract class WebViewBase extends ContainerView implements WebViewDefini
             object: this,
             url: url,
             navigationType: navigationType,
+            error: undefined
+        };
+
+        this.notify(args);
+    }
+
+    public _onProgress(progress: number) {
+        let args = <ProgressEventData>{
+            eventName: WebViewBase.progressEvent,
+            object: this,
+            progress,
             error: undefined
         };
 
@@ -108,6 +121,7 @@ export abstract class WebViewBase extends ContainerView implements WebViewDefini
 // HACK: Do we need this? Is it useful? There are static fields to the WebViewBase class for the event names.
 export interface WebViewBase {
     on(eventNames: string, callback: (data: EventData) => void, thisArg?: any);
+    on(event: "progress", callback: (args: ProgressEventData) => void, thisArg?: any);
     on(event: "loadFinished", callback: (args: LoadEventData) => void, thisArg?: any);
     on(event: "loadCommitted", callback: (args: LoadEventData) => void, thisArg?: any);
     on(event: "loadStarted", callback: (args: LoadEventData) => void, thisArg?: any);

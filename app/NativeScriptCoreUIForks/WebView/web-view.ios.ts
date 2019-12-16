@@ -11,9 +11,43 @@ class WKNavigationDelegateImpl extends NSObject
         const handler = <WKNavigationDelegateImpl>WKNavigationDelegateImpl.new();
         handler._owner = owner;
 
+        const wkWebView = <WKWebView>owner.get().ios;
+        wkWebView.addObserverForKeyPathOptionsContext(handler, "title", 0, <any>null);
+        wkWebView.addObserverForKeyPathOptionsContext(handler, "URL", 0, <any>null);
+        wkWebView.addObserverForKeyPathOptionsContext(handler, "estimatedProgress", 0, <any>null);
+
         return handler;
     }
     private _owner: WeakRef<WebView>;
+
+    public observeValueForKeyPathOfObjectChangeContext(keyPath:string, object:any, change:any, context:any) {
+        const owner = this._owner.get();
+        if (!owner) return;        
+        
+        const wkWebView = <WKWebView>owner.ios;
+
+        switch (keyPath) {
+            case "title": 
+                owner.set(keyPath, wkWebView.title); 
+                break;
+            case "URL": 
+                this.updateURL();
+                break;
+            case "estimatedProgress":
+                owner.set('progress', wkWebView.estimatedProgress);
+                owner._onProgress(wkWebView.estimatedProgress);
+                break;
+        }
+    }
+
+    private updateURL() {
+        const owner = this._owner.get();
+        if (!owner) return;     
+        const wkWebView = <WKWebView>owner.ios;
+        owner['_suspendLoading'] = true; 
+        owner.set("url", wkWebView.URL && wkWebView.URL.absoluteString); 
+        owner['_suspendLoading'] = false; 
+    }
 
     public webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: any): void {
         const owner = this._owner.get();

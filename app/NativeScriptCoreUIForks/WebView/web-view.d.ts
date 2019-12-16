@@ -58,6 +58,12 @@
       * Gets a value indicating whether the WebView can navigate forward.
       */
      canGoForward: boolean;
+
+     /**
+      * Gets the estimated loading progress of the source web page.
+      * @available ios
+      */
+     progress: number;
  
      /**
       * Stops loading the current content (if any).
@@ -86,6 +92,11 @@
       * @param thisArg - An optional parameter which will be used as `this` context for callback execution.
       */
      on(eventNames: string, callback: (data: EventData) => void, thisArg?: any);
+
+     /**
+      * Raised when a progress event occurs.
+      */
+     on(event: "progress", callback: (args: ProgressEventData) => void, thisArg?: any);
  
      /**
       * Raised when a loadFinished event occurs.
@@ -101,7 +112,14 @@
       * Raised when a loadStarted event occurs.
       */
      on(event: "loadStarted", callback: (args: LoadEventData) => void, thisArg?: any);
- }
+}
+
+/**
+ * Event data containing information for the progress events of a WebView.
+ */
+export interface ProgressEventData extends EventData {
+    progress: number;
+}
  
  /**
   * Event data containing information for the loading events of a WebView.
