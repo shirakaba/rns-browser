@@ -32,6 +32,10 @@ class AppContainer extends React.Component<Props, State> {
 
     componentDidMount(){
         Application.on(Application.orientationChangedEvent, this.onOrientationChange);
+
+        const page: Page = this.props.forwardedRef.current!;
+        page.addCssFile("./components/AppContainer.scss"); // Path is relative to the 'app' folder; not relative to this file!
+        return page;
     }
     
     componentWillUnmount(){
