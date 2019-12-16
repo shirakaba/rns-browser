@@ -34,10 +34,10 @@ class GradientProgressBar extends React.Component<GradientProgressBarProps, Stat
 export const GradientProgressBarConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
-        const { activeTab, tabStateRecord } = wholeStoreState.navigation;
+        const { activeTab, tabs } = wholeStoreState.navigation;
 
         return {
-            progress: tabStateRecord[activeTab].loadProgress,
+            progress: tabs[activeTab].loadProgress,
         };
     },
     {},

@@ -89,11 +89,11 @@ class DisplayTextField extends React.Component<DisplayTextFieldProps & TextField
 const DisplayTextFieldConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
-        const { activeTab, tabStateRecord, urlBarText } = wholeStoreState.navigation;
+        const { activeTab, tabs, urlBarText } = wholeStoreState.navigation;
 
         return {
             activeTab,
-            // urlBarText: tabStateRecord[activeTab].url,
+            // urlBarText: tabs[activeTab].url,
             urlBarText,
         };
     },

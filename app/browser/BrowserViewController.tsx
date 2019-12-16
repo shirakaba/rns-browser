@@ -77,7 +77,7 @@ class WebViewContainerBackdrop extends React.Component<StackLayoutComponentProps
 
 interface WebViewContainerProps {
     activeTab: string,
-    tabStateRecord: TabStateRecord,
+    tabs: TabStateRecord,
     updateUrlBarText: typeof updateUrlBarText,
     setProgressOnWebView: typeof setProgressOnWebView,
 }
@@ -132,7 +132,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
     };
 
     render(){
-        const { activeTab, tabStateRecord, children, ...rest } = this.props;
+        const { activeTab, tabs, children, ...rest } = this.props;
 
         return (
             // UIView()
@@ -151,7 +151,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
                     onProgress={this.onProgress}
                     width={{ value: 100, unit: "%" }}
                     height={{ value: 100, unit: "%" }}
-                    src={tabStateRecord[activeTab].url}
+                    src={tabs[activeTab].url}
                 />
             </$StackLayout>
         );
@@ -163,7 +163,7 @@ const WebViewContainerConnected = connect(
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
             activeTab: wholeStoreState.navigation.activeTab,
-            tabStateRecord: wholeStoreState.navigation.tabStateRecord,
+            tabs: wholeStoreState.navigation.tabs,
         };
     },
     {

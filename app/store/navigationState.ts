@@ -14,7 +14,7 @@ const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
         activeTab: "tab0",
-        tabStateRecord: {
+        tabs: {
             tab0: {
                 url: initialPage,
                 loadProgress: 0,
@@ -34,7 +34,7 @@ const navigationSlice = createSlice({
         setUrlOnWebView(state, action: { payload: { url: string, tab?: string } }) {
             // console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.url}"`);
             const { url, tab = state.activeTab } = action.payload;
-            state.tabStateRecord[tab] = {
+            state.tabs[tab] = {
                 url,
                 loadProgress: 0,
             };
@@ -42,7 +42,7 @@ const navigationSlice = createSlice({
         setProgressOnWebView(state, action: { payload: { progress: number, tab?: string } }) {
             // console.log(`[setUrlOnWebView] setting progress for activeTab "${state.activeTab}" as: "${action.payload.progress}"`);
             const { progress, tab = state.activeTab } = action.payload;
-            state.tabStateRecord[tab].loadProgress = progress;
+            state.tabs[tab].loadProgress = progress;
         },
         goBackOnWebView(state, action){
 
