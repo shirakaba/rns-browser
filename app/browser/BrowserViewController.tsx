@@ -15,6 +15,7 @@ import { WholeStoreState } from "~/store/store";
 import { webViews, updateUrlBarText, TabStateRecord, setProgressOnWebView } from "~/store/navigationState";
 import { BetterWebView } from "~/components/BetterWebView";
 import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
+import { setHeaderRetraction, setFooterRetraction, setBarsRetraction, RetractionState } from "~/store/barsState";
 
 const BrowserViewControllerUX = {
     ShowHeaderTapAreaHeight: 0,
@@ -80,12 +81,21 @@ interface WebViewContainerProps {
     tabs: TabStateRecord,
     updateUrlBarText: typeof updateUrlBarText,
     setProgressOnWebView: typeof setProgressOnWebView,
+    // setHeaderRetraction: typeof setHeaderRetraction,
+    // setFooterRetraction: typeof setFooterRetraction,
+    setBarsRetraction: typeof setBarsRetraction,
 }
 
 class WebViewContainer extends React.Component<WebViewContainerProps & StackLayoutComponentProps, { }> {
     private readonly onPan = (e: PanGestureEventData) => {
         console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
-        // TODO: Use this info to retract the bars.
+        
+        if(e.deltaY < 0){
+            // Gesture flings the scrollView upwards (scrolls downwards)
+            this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.retracted });
+        } else {
+            this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.revealed });
+        }
     };
 
     private readonly onLoadStarted = (args: LoadEventData) => {
@@ -169,6 +179,9 @@ const WebViewContainerConnected = connect(
     {
         updateUrlBarText,
         setProgressOnWebView,
+        // setHeaderRetraction,
+        // setFooterRetraction,
+        setBarsRetraction,
     },
 )(WebViewContainer);
 
