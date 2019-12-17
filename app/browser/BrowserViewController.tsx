@@ -16,6 +16,7 @@ import { webViews, updateUrlBarText, TabStateRecord, setProgressOnWebView } from
 import { BetterWebView } from "~/components/BetterWebView";
 import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
 import { setHeaderRetraction, setFooterRetraction, setBarsRetraction, RetractionState } from "~/store/barsState";
+import { BarRetractionRecommendationEventData } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
 const BrowserViewControllerUX = {
     ShowHeaderTapAreaHeight: 0,
@@ -87,11 +88,22 @@ interface WebViewContainerProps {
 }
 
 class WebViewContainer extends React.Component<WebViewContainerProps & StackLayoutComponentProps, { }> {
-    private readonly onPan = (e: PanGestureEventData) => {
-        console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
+    // private readonly onPan = (e: PanGestureEventData) => {
+    //     console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
         
-        // This is just a basic setup. TODO: only commit to firing the action upon deceleration of scroll.
-        if(e.deltaY < 0){
+    //     // This is just a basic setup. TODO: only commit to firing the action upon deceleration of scroll.
+    //     if(e.deltaY < 0){
+    //         // Gesture flings the scrollView upwards (scrolls downwards)
+    //         this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.retracted });
+    //     } else {
+    //         this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.revealed });
+    //     }
+    // };
+
+    private readonly onBarRetractionRecommendation = (e: BarRetractionRecommendationEventData) => {
+        console.log(`WebView barsShouldRetract ${e.barsShouldRetract}`);
+        
+        if(e.barsShouldRetract){
             // Gesture flings the scrollView upwards (scrolls downwards)
             this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.retracted });
         } else {
@@ -155,7 +167,8 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
                 <BetterWebView
                     // TODO: will have to solve how best to build one webView for each tab, give it a unique ref, and allow animation between tabs.
                     ref={webViews.get(activeTab)}
-                    onPan={this.onPan}
+                    // onPan={this.onPan}
+                    onBarRetractionRecommendation={this.onBarRetractionRecommendation}
                     onLoadStarted={this.onLoadStarted}
                     onLoadCommitted={this.onLoadCommitted}
                     onLoadFinished={this.onLoadFinished}

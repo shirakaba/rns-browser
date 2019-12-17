@@ -1,14 +1,14 @@
 import * as React from "react";
 import { createSlice } from "@reduxjs/toolkit";
-import { WebView } from "tns-core-modules/ui/web-view/web-view";
+import { BarAwareWebView } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
 /* Not strictly the most correct typing for an action, but accurate enough to work with*/
 type Action<P, T = { type: string }> = T & {
     payload: P;
 };
 type WebViewId = string;
-export const webViews = new Map<WebViewId, React.RefObject<WebView>>([
-    ["tab0", React.createRef<WebView>()]
+export const webViews = new Map<WebViewId, React.RefObject<BarAwareWebView>>([
+    ["tab0", React.createRef<BarAwareWebView>()]
 ]);
 export type TabStateRecord = Record<string, { url: string, loadProgress: number }>;
 

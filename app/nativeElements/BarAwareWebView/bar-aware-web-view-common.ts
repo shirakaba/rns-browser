@@ -15,7 +15,7 @@ export abstract class BarAwareWebViewBase extends WebViewBase {
 
     public _onBarRetractionRecommendation(barsShouldRetract: boolean) {
         let args = <BarRetractionRecommendationEventData>{
-            eventName: WebViewBase.loadFinishedEvent,
+            eventName: BarAwareWebViewBase.barRetractionRecommendationEvent,
             object: this,
             barsShouldRetract,
         };

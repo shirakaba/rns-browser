@@ -9,14 +9,15 @@ import { EventData } from "tns-core-modules/data/observable/observable";
 import { register } from "react-nativescript/dist/client/ElementRegistry";
 import { WebView, ProgressEventData } from "../NativeScriptCoreUIForks/WebView";
 import { isIOS, isAndroid } from "tns-core-modules/ui/page/page";
+import { BarRetractionRecommendationEventData, BarAwareWebView } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
 /**
  * I can't sign the CLA to contribute to NativeScript Core, so I'll have to just maintain a fork of it within this project.
  * We're sure to have special features that we want to maintain, anyway.
  */
-register("betterWebView", () => new WebView());
+register("betterWebView", () => new BarAwareWebView());
 
-type NativeScriptUIElement = NativeScriptWebView;
+type NativeScriptUIElement = BarAwareWebView;
 
 interface NarrowedLoadEventData extends LoadEventData {
     object: NativeScriptWebView;
@@ -27,15 +28,20 @@ interface Props {
     onLoadFinished?: (args: NarrowedLoadEventData) => void;
     onLoadStarted?: (args: NarrowedLoadEventData) => void;
     /**
-     * Added to BetterWebView.
+     * Added to our WebView fork.
      * @available ios
      */
     onLoadCommitted?: (args: NarrowedLoadEventData) => void;
     /**
-     * Added to BetterWebView.
+     * Added to our WebView fork.
      * @available ios
      */
     onProgress?: (args: ProgressEventData) => void;
+    /**
+     * Added to our BarAwareWebView.
+     * @available ios
+     */
+    onBarRetractionRecommendation?: (args: BarRetractionRecommendationEventData) => void;
 }
 
 export type WebViewComponentProps<
@@ -65,6 +71,7 @@ class _BetterWebView<
             updateListener(node, "loadStarted", this.props.onLoadStarted, nextProps.onLoadStarted);
 
             updateListener(node, "progress", this.props.onProgress, nextProps.onProgress);
+            updateListener(node, "barRetractionRecommendation", this.props.onBarRetractionRecommendation, nextProps.onBarRetractionRecommendation);
         } else {
             const method = (attach ? node.on : node.off).bind(node);
             if (this.props.onUrlChange) method("urlChange", this.props.onUrlChange);
@@ -73,6 +80,7 @@ class _BetterWebView<
             if (this.props.onLoadStarted) method("loadStarted", this.props.onLoadStarted);
             
             if (this.props.onProgress) method("progress", this.props.onProgress);
+            if (this.props.onBarRetractionRecommendation) method("barRetractionRecommendation", this.props.onBarRetractionRecommendation);
         }
     }
 
@@ -80,6 +88,7 @@ class _BetterWebView<
         const {
             forwardedRef,
 
+            onBarRetractionRecommendation,
             onLoadStarted,
             onLoadCommitted,
             onLoadFinished,
