@@ -3,7 +3,7 @@
 import { WebViewBase } from "../../NativeScriptCoreUIForks/WebView/web-view-common";
 import { ContainerView, Property, EventData, CSSType } from "@nativescript/core/ui/core/view";
 import { File, knownFolders, path } from "../../NativeScriptCoreUIForks/WebView/web-view-common";
-import { BarRetractionRecommendationEventData, ProgressEventData, LoadEventData } from "./bar-aware-web-view-interfaces";
+import { BarRetractionRecommendationEventData, ProgressEventData, LoadEventData, RetractionState } from "./bar-aware-web-view-interfaces";
 
 export { File, knownFolders, path };
 export * from "./bar-aware-web-view-interfaces";
@@ -12,6 +12,8 @@ export * from "@nativescript/core/ui/core/view";
 @CSSType("BarAwareWebView")
 export abstract class BarAwareWebViewBase extends WebViewBase {
     public static barRetractionRecommendationEvent = "barRetractionRecommendation";
+
+    public barRetractionState: RetractionState|null = null;
 
     public _onBarRetractionRecommendation(barsShouldRetract: boolean) {
         let args = <BarRetractionRecommendationEventData>{

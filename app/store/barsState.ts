@@ -1,18 +1,12 @@
 import * as React from "react";
 import { createSlice } from "@reduxjs/toolkit";
 import { WebView } from "tns-core-modules/ui/web-view/web-view";
+import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
 
 /* Not strictly the most correct typing for an action, but accurate enough to work with*/
 type Action<P, T = { type: string }> = T & {
     payload: P;
 };
-
-export enum RetractionState {
-    revealed = "revealed",
-    retracting = "retracting",
-    retracted = "retracted",
-    revealing = "revealing",
-}
 
 const barsSlice = createSlice({
     name: 'bars',
@@ -63,7 +57,7 @@ export function setBarsRetraction(payload: { bars: "header"|"footer"|"both", ani
     return function(dispatch, getState) {
         const { bars, animated, retraction } = payload;
 
-        console.log(`[setBarsRetraction]`, payload);
+        // console.log(`[setBarsRetraction]`, payload);
 
         return dispatch(barsSlice.actions.setBarsRetraction({ bars, animated, retraction }));
     };

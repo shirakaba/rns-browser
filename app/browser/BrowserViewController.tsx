@@ -15,8 +15,9 @@ import { WholeStoreState } from "~/store/store";
 import { webViews, updateUrlBarText, TabStateRecord, setProgressOnWebView } from "~/store/navigationState";
 import { BetterWebView } from "~/components/BetterWebView";
 import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
-import { setHeaderRetraction, setFooterRetraction, setBarsRetraction, RetractionState } from "~/store/barsState";
+import { setHeaderRetraction, setFooterRetraction, setBarsRetraction } from "~/store/barsState";
 import { BarRetractionRecommendationEventData } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
+import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
 
 const BrowserViewControllerUX = {
     ShowHeaderTapAreaHeight: 0,
@@ -78,6 +79,7 @@ class WebViewContainerBackdrop extends React.Component<StackLayoutComponentProps
 }
 
 interface WebViewContainerProps {
+    barsState: WholeStoreState["bars"],
     activeTab: string,
     tabs: TabStateRecord,
     updateUrlBarText: typeof updateUrlBarText,
@@ -90,8 +92,6 @@ interface WebViewContainerProps {
 class WebViewContainer extends React.Component<WebViewContainerProps & StackLayoutComponentProps, { }> {
     // private readonly onPan = (e: PanGestureEventData) => {
     //     console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
-        
-    //     // This is just a basic setup. TODO: only commit to firing the action upon deceleration of scroll.
     //     if(e.deltaY < 0){
     //         // Gesture flings the scrollView upwards (scrolls downwards)
     //         this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.retracted });
@@ -155,7 +155,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
     };
 
     render(){
-        const { activeTab, tabs, children, ...rest } = this.props;
+        const { activeTab, tabs, barsState, children, ...rest } = this.props;
 
         return (
             // UIView()
@@ -173,6 +173,8 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
                     onLoadCommitted={this.onLoadCommitted}
                     onLoadFinished={this.onLoadFinished}
                     onProgress={this.onProgress}
+                    // Feeding in either bar's state is sufficient for now, unless we find a reason to start retracting them independently.
+                    barRetractionState={barsState.footer.retraction}
                     width={{ value: 100, unit: "%" }}
                     height={{ value: 100, unit: "%" }}
                     src={tabs[activeTab].url}
@@ -186,6 +188,7 @@ const WebViewContainerConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
+            barsState: wholeStoreState.bars,
             activeTab: wholeStoreState.navigation.activeTab,
             tabs: wholeStoreState.navigation.tabs,
         };

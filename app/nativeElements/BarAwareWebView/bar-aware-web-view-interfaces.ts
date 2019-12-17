@@ -9,3 +9,10 @@ export interface BarAwareWebViewClient {
 export interface BarRetractionRecommendationEventData extends EventData {
     barsShouldRetract: boolean;
 }
+
+export enum RetractionState {
+    revealed = "revealed",
+    retracting = "retracting",
+    retracted = "retracted",
+    revealing = "revealing",
+}

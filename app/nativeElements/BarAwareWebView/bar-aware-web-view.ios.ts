@@ -2,6 +2,7 @@
 import { NavigationType } from "../../NativeScriptCoreUIForks/WebView";
 import { BarAwareWebViewBase, knownFolders, traceWrite, traceEnabled, traceCategories } from "./bar-aware-web-view-common";
 import { profile } from "@nativescript/core/profiling";
+import { RetractionState } from "./bar-aware-web-view-interfaces";
 export * from "./bar-aware-web-view-common";
 
 class BarAwareUIScrollViewDelegateImpl extends NSObject implements UIScrollViewDelegate {
@@ -16,9 +17,18 @@ class BarAwareUIScrollViewDelegateImpl extends NSObject implements UIScrollViewD
     }
     private _owner: WeakRef<BarAwareWebView>;
 
-    // public scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean {
-    //     return true;
-    // }
+    /* On first tap of status bar, we prevent scrolling to top – just retract bars. */
+    public scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean {
+        const owner = this._owner.get();
+        if (!owner || !owner.barRetractionState) return true;
+
+        if(owner.barRetractionState === RetractionState.retracted || owner.barRetractionState === RetractionState.retracting){
+            owner._onBarRetractionRecommendation(false);
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public scrollViewWillBeginDecelerating(scrollView: UIScrollView): void {
         const owner = this._owner.get();

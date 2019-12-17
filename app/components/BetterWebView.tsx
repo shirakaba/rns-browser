@@ -10,6 +10,7 @@ import { register } from "react-nativescript/dist/client/ElementRegistry";
 import { WebView, ProgressEventData } from "../NativeScriptCoreUIForks/WebView";
 import { isIOS, isAndroid } from "tns-core-modules/ui/page/page";
 import { BarRetractionRecommendationEventData, BarAwareWebView } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
+import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
 /**
  * I can't sign the CLA to contribute to NativeScript Core, so I'll have to just maintain a fork of it within this project.
@@ -42,11 +43,12 @@ interface Props {
      * @available ios
      */
     onBarRetractionRecommendation?: (args: BarRetractionRecommendationEventData) => void;
+    barRetractionState?: RetractionState|null;
 }
 
 export type WebViewComponentProps<
     E extends NativeScriptUIElement = NativeScriptUIElement
-> = Props /* & typeof _WebView.defaultProps */ & Partial<WebViewProps> & ViewComponentProps<E>;
+> = Props & Partial<WebViewProps> & ViewComponentProps<E>;
 
 /**
  * A React wrapper around the NativeScript WebView component.
