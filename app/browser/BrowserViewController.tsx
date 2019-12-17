@@ -90,6 +90,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
     private readonly onPan = (e: PanGestureEventData) => {
         console.log(`WebView panned type ${e.type} - deltaX ${e.deltaX} deltaY ${e.deltaY}`);
         
+        // This is just a basic setup. TODO: only commit to firing the action upon deceleration of scroll.
         if(e.deltaY < 0){
             // Gesture flings the scrollView upwards (scrolls downwards)
             this.props.setBarsRetraction({ bars: "both", animated: true, retraction: RetractionState.retracted });
@@ -244,7 +245,10 @@ class Footer extends React.Component<FooterProps & StackLayoutComponentProps, {}
                     width={{ value: 100, unit: "%" }}
                     {...rest}
                 >
-                    <TabToolbar/>
+                    <TabToolbar
+                        height={retraction === RetractionState.revealed ? "auto" : { value: 0, unit: "dip" }}
+                        opacity={retraction === RetractionState.revealed ? 1 : 0}
+                    />
                 </$ContentView>
             );
         }

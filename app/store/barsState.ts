@@ -29,7 +29,17 @@ const barsSlice = createSlice({
             state,
             action: Action<{ bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
         ){
-
+            const { bars, animated, retraction } = action.payload;
+            // We'll ignore animation for now.
+            switch(bars){
+                case "header":
+                    state.header.retraction = retraction;
+                case "footer":
+                    state.footer.retraction = retraction;
+                case "both":
+                    state.header.retraction = retraction;
+                    state.footer.retraction = retraction;
+            }
         },
         setHeaderRetraction(
             state,
