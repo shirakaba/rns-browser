@@ -1,4 +1,4 @@
-/// <reference path="../../node_modules/tns-platform-declarations/ios.d.ts" />
+/// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 import { WebView } from "~/NativeScriptCoreUIForks/WebView/web-view";
 
 class BarAwareUIScrollViewDelegateImpl extends NSObject implements UIScrollViewDelegate {
