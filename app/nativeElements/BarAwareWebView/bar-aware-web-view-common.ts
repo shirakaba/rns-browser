@@ -5,7 +5,7 @@ import { ContainerView, Property, EventData, CSSType } from "@nativescript/core/
 import { File, knownFolders, path } from "../../NativeScriptCoreUIForks/WebView/web-view-common";
 
 export { File, knownFolders, path };
-// export * from "./bar-aware-web-view-interfaces";
+export * from "./bar-aware-web-view-interfaces";
 export * from "@nativescript/core/ui/core/view";
 
 @CSSType("BarAwareWebView")

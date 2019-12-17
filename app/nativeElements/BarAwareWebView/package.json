@@ -1,0 +1,5 @@
+{
+    "name": "bar-aware-web-view",
+    "main": "bar-aware-web-view",
+    "types": "bar-aware-web-view.d.ts"
+}
