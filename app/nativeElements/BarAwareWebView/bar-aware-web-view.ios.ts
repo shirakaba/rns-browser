@@ -21,17 +21,23 @@ class BarAwareUIScrollViewDelegateImpl extends NSObject implements UIScrollViewD
     // }
 
     public scrollViewWillBeginDecelerating(scrollView: UIScrollView): void {
+        const owner = this._owner.get();
+        if (!owner) return;
+
         const translation: CGPoint = scrollView.panGestureRecognizer.translationInView(scrollView);
 
-        // setNavigationBarHidden(translation.y <= 0, animated: true)
+        owner._onBarRetractionRecommendation(translation.y <= 0);
     }
 
     public scrollViewDidScroll(scrollView: UIScrollView): void {
+        const owner = this._owner.get();
+        if (!owner) return;
+
         const translation: CGPoint = scrollView.panGestureRecognizer.translationInView(scrollView);
 
         if(translation.y < 0){
             if(scrollView.dragging){
-                // setNavigationBarHidden(true, animated: true)
+                owner._onBarRetractionRecommendation(true);
             }
         }
     }
