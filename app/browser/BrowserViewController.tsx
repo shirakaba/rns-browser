@@ -226,18 +226,24 @@ class AlertStackView extends React.Component<StackLayoutComponentProps, {}> {
     }
 }
 
-type FooterProps = { showToolbar: boolean, } & StackLayoutComponentProps;
+interface FooterProps {
+    retraction: RetractionState,
+    showToolbar: boolean,
+};
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L103
-class Footer extends React.Component<FooterProps, {}> {
+class Footer extends React.Component<FooterProps & StackLayoutComponentProps, {}> {
     render(){
-        const { showToolbar, children, ...rest } = this.props;
+        const { retraction, showToolbar, children, ...rest } = this.props;
 
         if(showToolbar){
             /* Warning: I've tried other layouts (StackLayout and FlexboxLayout) here, but they shift
              * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
-                <$ContentView width={{ value: 100, unit: "%" }} {...rest}>
+                <$ContentView
+                    width={{ value: 100, unit: "%" }}
+                    {...rest}
+                >
                     <TabToolbar/>
                 </$ContentView>
             );
@@ -250,6 +256,16 @@ class Footer extends React.Component<FooterProps, {}> {
         );
     }
 }
+
+const FooterConnected = connect(
+    (wholeStoreState: WholeStoreState) => {
+        // console.log(`wholeStoreState`, wholeStoreState);
+        return {
+            retraction: wholeStoreState.bars.footer.retraction,
+        };
+    },
+    {},
+)(Footer);
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L65
 class OverlayBackground extends React.Component<{}, {}> {
@@ -317,7 +333,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     {/* <OverlayBackground/> */}
 
                     {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <Footer row={3} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
+                    <FooterConnected row={3} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
                 </$GridLayout>
             </$GridLayout>
         );

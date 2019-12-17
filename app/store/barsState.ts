@@ -17,8 +17,12 @@ export enum RetractionState {
 const barsSlice = createSlice({
     name: 'bars',
     initialState: {
-        header: RetractionState.revealed,
-        footer: RetractionState.revealed,
+        header: {
+            retraction: RetractionState.revealed
+        },
+        footer: {
+            retraction: RetractionState.revealed
+        },
     },
     reducers: {
         setBarsRetraction(
