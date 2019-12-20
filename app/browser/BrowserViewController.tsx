@@ -314,8 +314,6 @@ export class BrowserViewController extends React.Component<Props, State> {
         // Visibility of certain components changes when switching app (if in private browsing mode)
         // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
 
-        
-
         return (
             <$DockLayout
                 stretchLastChild={true}
@@ -330,6 +328,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%"}}
                 >
+                    <FooterConnected dock={"bottom"} orientation={orientation} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
                     <$GridLayout
                         dock={"top"}
                         width={{ value: 100, unit: "%"}}
@@ -340,9 +339,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                         <WebViewContainerBackdrop row={0} col={0} backgroundColor={"gold"}/>
                         <WebViewContainerConnected row={0} col={0}/>
                     </$GridLayout>
-                    <FooterConnected dock={"bottom"} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
                 </$DockLayout>
-
             </$DockLayout>
         );
     }
