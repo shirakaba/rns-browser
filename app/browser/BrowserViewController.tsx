@@ -244,27 +244,30 @@ class AlertStackView extends React.Component<StackLayoutComponentProps, {}> {
 }
 
 interface FooterProps {
+    orientation: "portrait"|"landscape"|"unknown",
     retraction: RetractionState,
     showToolbar: boolean,
 };
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L103
-class Footer extends React.Component<FooterProps & StackLayoutComponentProps, {}> {
+class Footer extends React.Component<FooterProps & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { retraction, showToolbar, children, ...rest } = this.props;
+        const { retraction, showToolbar, orientation, children, ...rest } = this.props;
 
         if(showToolbar){
             /* Warning: I've tried other layouts (StackLayout and FlexboxLayout) here, but they shift
              * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
                 <$ContentView
+                    height={
+                        retraction === RetractionState.revealed ? 
+                            { value: 44, unit: "dip" } : 
+                            { value: 0, unit: "dip" }
+                    }
                     width={{ value: 100, unit: "%" }}
                     {...rest}
                 >
-                    <TabToolbar
-                        height={retraction === RetractionState.revealed ? "auto" : { value: 0, unit: "dip" }}
-                        opacity={retraction === RetractionState.revealed ? 1 : 0}
-                    />
+                    <TabToolbar/>
                 </$ContentView>
             );
         }
