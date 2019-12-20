@@ -314,31 +314,24 @@ export class BrowserViewController extends React.Component<Props, State> {
         // Visibility of certain components changes when switching app (if in private browsing mode)
         // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L343
 
+        
+
         return (
-            <$GridLayout
+            <$DockLayout
+                stretchLastChild={true}
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%"}}
-                rows={[new ItemSpec(1, "star"),]}
-                columns={[new ItemSpec(1, "star")]}
             >
-                {/* Layer 0 (top-most layer) */}
-                <$GridLayout
-                    row={0}
+                <NotchAreaCover dock={"top"} orientation={orientation}/>
+
+                <$DockLayout
+                    dock={"bottom"}
+                    stretchLastChild={true}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%"}}
-                    rows={[
-                        new ItemSpec(0, "pixel"), // Opaque, fixed-height status bar
-                        new ItemSpec(1, "auto"), // Retractable nav bar
-                        new ItemSpec(1, "star"), // full-height scroll view
-                        new ItemSpec(1, "auto"), // Retractable tool bar
-                    ]}
-                    columns={[new ItemSpec(1, "star")]}
-                    // backgroundColor={"pink"}
                 >
-                    <TopTouchArea row={0}/>
-                    <NotchAreaCover row={1} orientation={orientation}/>
                     <$GridLayout
-                        row={2}
+                        dock={"top"}
                         width={{ value: 100, unit: "%"}}
                         height={{ value: 100, unit: "%" }}
                         rows={[new ItemSpec(1, "star")]}
@@ -347,15 +340,10 @@ export class BrowserViewController extends React.Component<Props, State> {
                         <WebViewContainerBackdrop row={0} col={0} backgroundColor={"gold"}/>
                         <WebViewContainerConnected row={0} col={0}/>
                     </$GridLayout>
+                    <FooterConnected dock={"bottom"} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
+                </$DockLayout>
 
-                    {/* <AlertStackView/> */}
-
-                    {/* <OverlayBackground/> */}
-
-                    {/* Leading and trailing sides intended to anchor to those of self.view. Bottom anchors to that of self.view. */}
-                    <FooterConnected row={3} showToolbar={true} backgroundColor={"gray"} visibility={orientation === "landscape" ? "collapse" : "visible"}/>
-                </$GridLayout>
-            </$GridLayout>
+            </$DockLayout>
         );
     }
 }

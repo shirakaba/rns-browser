@@ -4,7 +4,7 @@ import { $Page, $Label, $ActionBar, $GridLayout, $FormattedString, $Span, $Switc
 import { ItemSpec } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
 import { Frame, Page } from 'tns-core-modules/ui/frame/frame';
 import { BrowserViewController } from '~/browser/BrowserViewController';
-import { Application, OrientationChangedEventData } from "@nativescript/core";
+import { Application, OrientationChangedEventData, Screen } from "@nativescript/core";
 import { Provider } from 'react-redux';
 import { store } from '~/store/store';
 
@@ -32,6 +32,7 @@ class AppContainer extends React.Component<Props, State> {
 
     componentDidMount(){
         Application.on(Application.orientationChangedEvent, this.onOrientationChange);
+        
 
         const page: Page = this.props.forwardedRef.current!;
         page.addCssFile("./components/AppContainer.scss"); // Path is relative to the 'app' folder; not relative to this file!
