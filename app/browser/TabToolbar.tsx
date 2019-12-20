@@ -22,7 +22,7 @@ export class TabToolbar extends React.Component<Props & FlexboxLayoutComponentPr
                 justifyContent={"space-around"}
                 alignItems={"center"}
                 width={{ value: 100, unit: "%" }}
-                paddingTop={16}
+                // paddingTop={16}
                 {...rest}
             >
                 {/* actionButtons */}

@@ -12,3 +12,14 @@
     animation-name: fade-out;
     animation-duration: 1s;
 }
+
+/* Doesn't appear to work as desired. */
+@keyframes retract {
+    from { height: 44; }
+    to { height: 0; }
+}
+
+.retract-anim {
+    animation-name: retract;
+    animation-duration: 5s;
+}
