@@ -259,6 +259,7 @@ class Footer extends React.Component<FooterProps & Omit<StackLayoutComponentProp
              * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
                 <$ContentView
+                    className={retraction === RetractionState.revealed ? "" : "retract-anim"}
                     height={
                         retraction === RetractionState.revealed ? 
                             { value: 44, unit: "dip" } : 
