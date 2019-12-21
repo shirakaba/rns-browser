@@ -1,6 +1,7 @@
 import { configureStore, applyMiddleware } from "@reduxjs/toolkit";
 import { rootReducer, RootReducer } from "./rootReducer";
-import thunk from 'redux-thunk';
+import thunk, { ThunkAction } from "redux-thunk";
+import { Action } from 'redux';
 
 export const store = configureStore({
     reducer: rootReducer,
@@ -8,3 +9,10 @@ export const store = configureStore({
 });
 
 export type WholeStoreState = RootReducer;
+// https://redux.js.org/recipes/usage-with-typescript/#usage-with-redux-thunk
+export type AppThunk<ReturnType = void> = ThunkAction<
+    ReturnType,
+    WholeStoreState,
+    null,
+    Action<string>
+>;

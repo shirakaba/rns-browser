@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ThunkAction } from "redux-thunk";
 import { Action } from 'redux';
-import { WholeStoreState } from "./store";
+import { WholeStoreState, AppThunk } from "./store";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
+
+type SetBarRetractionArgs = { animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed };
+type SetBarsRetractionArgs = SetBarRetractionArgs & { bars: "header"|"footer"|"both" };
 
 const barsSlice = createSlice({
     name: 'bars',
@@ -17,7 +20,7 @@ const barsSlice = createSlice({
     reducers: {
         setBarsRetraction(
             state,
-            action: PayloadAction<{ bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<SetBarsRetractionArgs>
         ){
             const { bars, animated, retraction } = action.payload;
             // We'll ignore animation for now.
@@ -33,13 +36,13 @@ const barsSlice = createSlice({
         },
         setHeaderRetraction(
             state,
-            action: PayloadAction<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<SetBarRetractionArgs>
         ){
 
         },
         setFooterRetraction(
             state,
-            action: PayloadAction<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<SetBarRetractionArgs>
         ){
 
         },
@@ -49,8 +52,7 @@ const barsSlice = createSlice({
 export const { } = barsSlice.actions;
 export const barsSliceReducer = barsSlice.reducer;
 
-export function setBarsRetraction(payload: { bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }): ThunkAction<void, WholeStoreState, null, Action<string>>
-{
+export function setBarsRetraction(payload: SetBarsRetractionArgs): AppThunk {
     return function(dispatch, getState) {
         const { bars, animated, retraction } = payload;
 
@@ -60,7 +62,7 @@ export function setBarsRetraction(payload: { bars: "header"|"footer"|"both", ani
     };
 }
 
-export function setHeaderRetraction(payload: { animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }) {
+export function setHeaderRetraction(payload: SetBarRetractionArgs): AppThunk {
     return function(dispatch, getState) {
         const { animated, retraction } = payload;
 
@@ -68,7 +70,7 @@ export function setHeaderRetraction(payload: { animated: boolean, retraction: Re
     };
 }
 
-export function setFooterRetraction(payload: { animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }) {
+export function setFooterRetraction(payload: SetBarRetractionArgs): AppThunk {
     return function(dispatch, getState) {
         const { animated, retraction } = payload;
 

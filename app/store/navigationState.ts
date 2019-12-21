@@ -2,7 +2,7 @@ import * as React from "react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ThunkAction } from "redux-thunk";
 import { Action } from 'redux';
-import { WholeStoreState } from "./store";
+import { WholeStoreState, AppThunk } from "./store";
 import { BarAwareWebView } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
 type WebViewId = string;
@@ -80,8 +80,7 @@ function getWebView(tab: string){
     return webViewRef.current!;
 }
 
-/* This is a thunk wrapping the "setUrlOnWebView" action. */
-export function submitUrlBarTextToWebView(url: string, tab?: string) {
+export function submitUrlBarTextToWebView(url: string, tab?: string): AppThunk {
     return function(dispatch, getState) {
         const chosenTab: string = tab || getState().navigation.activeTab;
         const webView = getWebView(chosenTab);
@@ -97,7 +96,7 @@ export function submitUrlBarTextToWebView(url: string, tab?: string) {
     };
 }
 
-export function goBackOnWebView(tab?: string) {
+export function goBackOnWebView(tab?: string): AppThunk {
     return function(dispatch, getState) {
         const chosenTab: string = tab || getState().navigation.activeTab;
         const webView = getWebView(chosenTab);
@@ -112,7 +111,7 @@ export function goBackOnWebView(tab?: string) {
     };
 }
 
-export function goForwardOnWebView(tab?: string) {
+export function goForwardOnWebView(tab?: string): AppThunk {
     return function(dispatch, getState) {
         const chosenTab: string = tab || getState().navigation.activeTab;
         const webView = getWebView(chosenTab);
@@ -128,7 +127,7 @@ export function goForwardOnWebView(tab?: string) {
 }
 
 
-export function reloadWebView(tab?: string) {
+export function reloadWebView(tab?: string): AppThunk {
     return function(dispatch, getState) {
         const chosenTab: string = tab || getState().navigation.activeTab;
         const webView = getWebView(chosenTab);
@@ -143,7 +142,7 @@ export function reloadWebView(tab?: string) {
     };
 }
 
-export function stopWebView(tab?: string) {
+export function stopWebView(tab?: string): AppThunk {
     return function(dispatch, getState) {
         const chosenTab: string = tab || getState().navigation.activeTab;
         const webView = getWebView(chosenTab);
