@@ -4,8 +4,9 @@ import { Action } from 'redux';
 import { WholeStoreState, AppThunk } from "./store";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
 
+type RetractionTarget = RetractionState.retracted|RetractionState.revealed;
 type AnimatedArg = { animated: boolean };
-type SetBarRetractionArgs = { retraction: RetractionState.retracted|RetractionState.revealed };
+type SetBarRetractionArgs = { retraction: RetractionTarget };
 type SetBarsRetractionArgs = SetBarRetractionArgs & { bars: "header"|"footer"|"both" };
 
 const barsSlice = createSlice({
@@ -19,35 +20,19 @@ const barsSlice = createSlice({
         },
     },
     reducers: {
-        setBarsRetraction(
-            state,
-            action: PayloadAction<SetBarsRetractionArgs>
-        ){
-            const { bars, retraction } = action.payload;
-            // We'll ignore animation for now.
-            switch(bars){
-                case "header":
-                    state.header.retraction = retraction;
-                case "footer":
-                    state.footer.retraction = retraction;
-                case "both":
-                    state.header.retraction = retraction;
-                    state.footer.retraction = retraction;
-            }
-        },
         setHeaderRetraction(
             state,
-            action: PayloadAction<SetBarRetractionArgs>
+            action: PayloadAction<RetractionTarget>
         ){
-            const { retraction } = action.payload;
+            const retraction = action.payload;
 
             state.header.retraction = retraction;
         },
         setFooterRetraction(
             state,
-            action: PayloadAction<SetBarRetractionArgs>
+            action: PayloadAction<RetractionTarget>
         ){
-            const { retraction } = action.payload;
+            const retraction = action.payload;
 
             state.footer.retraction = retraction;
         },
@@ -87,7 +72,7 @@ export function setHeaderRetraction(args: SetBarRetractionArgs & AnimatedArg): A
             return Promise.resolve();
         }
 
-        return dispatch(barsSlice.actions.setHeaderRetraction({ animated, retraction }));
+        return dispatch(barsSlice.actions.setHeaderRetraction(retraction));
     };
 }
 
@@ -99,6 +84,6 @@ export function setFooterRetraction(args: SetBarRetractionArgs & AnimatedArg): A
             return Promise.resolve();
         }
 
-        return dispatch(barsSlice.actions.setFooterRetraction({ animated, retraction }));
+        return dispatch(barsSlice.actions.setFooterRetraction(retraction));
     };
 }
