@@ -10,8 +10,10 @@ import { FlexboxLayoutComponentProps } from "react-nativescript/dist/components/
 import { connect } from 'react-redux';
 import { updateUrlBarText, submitUrlBarTextToWebView } from "~/store/navigationState";
 import { WholeStoreState } from "~/store/store";
+import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view.ios";
 
 interface Props {
+    retraction: RetractionState,
     slotBackgroundColor?: string,
     buttonBackgroundColor?: string,
     textFieldBackgroundColor?: string,
@@ -141,7 +143,12 @@ class PrivacyIndicator extends React.Component<{} & ButtonComponentProps, {}> {
 export class TabLocationView extends React.Component<Props & FlexboxLayoutComponentProps, State>{
 
     render(){
-        const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", ...rest } = this.props;
+        const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", retraction, ...rest } = this.props;
+
+        const revealedButtonSideLength: number = 30;
+        const retractedButtonSideLength: number = 0;
+
+        const useAutoLength: boolean = false; // I flip this boolean to experimentally determine what side length the icons use in practice.
 
         return (
             /* self.view */
@@ -167,15 +174,50 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
                     {/* privacyIndicator */}
-                    <PrivacyIndicator/>
+                    <PrivacyIndicator
+                        // TODO: animate
+                        height={useAutoLength ? "auto" : {
+                            value: retraction === RetractionState.revealed ? 
+                                revealedButtonSideLength : retractedButtonSideLength,
+                                unit: "dip"
+                        }}
+                        width={useAutoLength ? "auto" : {
+                            value: retraction === RetractionState.revealed ? 
+                                revealedButtonSideLength : retractedButtonSideLength,
+                                unit: "dip"
+                        }}
+                    />
                     
                     {/* privacyIndicatorSeparator */}
                     <$ContentView width={{ value: 3, unit: "dip" }}/>
                     <LockImageView locked={true}/>
                     <UrlTextField backgroundColor={textFieldBackgroundColor} flexGrow={1}/>
-                    <PageOptionsButton backgroundColor={buttonBackgroundColor}/>
+                    <PageOptionsButton
+                        backgroundColor={buttonBackgroundColor}
+                        // TODO: animate
+                        height={useAutoLength ? "auto" : {
+                            value: retraction === RetractionState.revealed ? 
+                                revealedButtonSideLength : retractedButtonSideLength,
+                                unit: "dip"
+                        }}
+                        width={useAutoLength ? "auto" : {
+                            value: retraction === RetractionState.revealed ? 
+                                revealedButtonSideLength : retractedButtonSideLength,
+                                unit: "dip"
+                        }}
+                    />
                 </$FlexboxLayout>
             </$FlexboxLayout>
         );
     }
 }
+
+export const TabLocationViewConnected = connect(
+    (wholeStoreState: WholeStoreState) => {
+        // console.log(`wholeStoreState`, wholeStoreState);
+        return {
+            retraction: wholeStoreState.bars.header.retraction,
+        };
+    },
+    {},
+)(TabLocationView);

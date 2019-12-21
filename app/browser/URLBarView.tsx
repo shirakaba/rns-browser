@@ -4,7 +4,7 @@ import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout } from "rea
 import { GradientProgressBarConnected } from "../Widgets/GradientProgressBar";
 import { ToolbarButton } from "./ToolbarButton";
 import { AutocompleteTextField } from "~/Widgets/AutocompleteTextField";
-import { TabLocationView } from "./TabLocationView";
+import { TabLocationView, TabLocationViewConnected } from "./TabLocationView";
 import { ButtonComponentProps } from "react-nativescript/dist/components/Button";
 import { BackButtonConnected, ForwardButtonConnected, StopReloadButtonConnected, TabsButtonConnected, MenuButtonConnected, CancelButtonConnected } from "./BarButtons";
 import { connect } from "react-redux";
@@ -101,7 +101,7 @@ export class URLBarView extends React.Component<Props, State>{
                     <ForwardButtonConnected backgroundColor={buttonBackgroundColor}/>
                     <StopReloadButtonConnected backgroundColor={buttonBackgroundColor}/>
                     {/* AKA locationView. */}
-                    <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <TabLocationViewConnected slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                     <TabsButtonConnected backgroundColor={buttonBackgroundColor}/>
                     <MenuButtonConnected backgroundColor={buttonBackgroundColor}/>
                 </$FlexboxLayout>
@@ -117,7 +117,7 @@ export class URLBarView extends React.Component<Props, State>{
                     width={{ value: 100, unit: "%" }}
                 >
                     {/* AKA locationView. */}
-                    <TabLocationView slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <TabLocationViewConnected slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                 </$FlexboxLayout>
             );
         }

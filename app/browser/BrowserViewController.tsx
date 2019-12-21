@@ -51,7 +51,7 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
 
         /* Dimensions based on: https://github.com/taisukeh/ScrollingBars */
         const revealedHeight: number = orientation === "portrait" || Device.deviceType === "Tablet" ? 64 : 44;
-        const retractedHeight: number = orientation === "portrait" ? 22 : 0;
+        const retractedHeight: number = orientation === "portrait" ? 30 : 0;
 
         return (
             <$FlexboxLayout
@@ -69,18 +69,13 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
                 backgroundColor={"gray"}
                 {...rest}
             >
-                {/* Not sure how we're going to make a satisfying animation for this. Maybe better to reconcile Header rather than swapping between the two. */}
-                {
-                    retraction === RetractionState.revealed ? 
-                        (<Header
-                            toolbarIsShowing={orientation === "landscape"}
-                            inOverlayMode={false}
-                            slotBackgroundColor={"darkgray"}
-                            textFieldBackgroundColor={"transparent"}
-                            buttonBackgroundColor={"transparent"}
-                        />) :
-                        (<$Label text={urlBarText}/>)
-                }
+                <Header
+                    toolbarIsShowing={orientation === "landscape"}
+                    inOverlayMode={false}
+                    slotBackgroundColor={"darkgray"}
+                    textFieldBackgroundColor={"transparent"}
+                    buttonBackgroundColor={"transparent"}
+                />
             </$FlexboxLayout>
         );
     }
