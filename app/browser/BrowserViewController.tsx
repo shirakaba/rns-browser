@@ -69,7 +69,6 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
                 {...rest}
             >
                 <$GridLayout
-                    dock={"top"}
                     width={{ value: 100, unit: "%"}}
                     height={{ value: 100, unit: "%" }}
                     rows={[new ItemSpec(1, "star")]}
