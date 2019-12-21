@@ -67,7 +67,7 @@ class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps
     }
 }
 
-export class Header extends React.Component<Props, State>{
+export class Header extends React.Component<Props & StackLayoutComponentProps, State>{
 
     render(){
         const {
@@ -86,6 +86,7 @@ export class Header extends React.Component<Props, State>{
                 slotBackgroundColor={slotBackgroundColor}
                 textFieldBackgroundColor={textFieldBackgroundColor}
                 buttonBackgroundColor={buttonBackgroundColor}
+                {...rest}
             />
         );
     }
