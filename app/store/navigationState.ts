@@ -1,11 +1,10 @@
 import * as React from "react";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ThunkAction } from "redux-thunk";
+import { Action } from 'redux';
+import { WholeStoreState } from "./store";
 import { BarAwareWebView } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 
-/* Not strictly the most correct typing for an action, but accurate enough to work with*/
-type Action<P, T = { type: string }> = T & {
-    payload: P;
-};
 type WebViewId = string;
 export const webViews = new Map<WebViewId, React.RefObject<BarAwareWebView>>([
     ["tab0", React.createRef<BarAwareWebView>()]
@@ -31,12 +30,12 @@ const navigationSlice = createSlice({
         /**
          * Update the singleton URL bar's displayed text (does not launch a query).
          */
-        updateUrlBarText(state, action: Action<string>) {
+        updateUrlBarText(state, action: PayloadAction<string>) {
             // console.log(`[navigationState.ts] updateUrlBarText action ${JSON.stringify(action)} and state`, state);
             const text = action.payload;
             state.urlBarText = text;
         },
-        setUrlOnWebView(state, action: Action<{ url: string, tab?: string }>) {
+        setUrlOnWebView(state, action: PayloadAction<{ url: string, tab?: string }>) {
             // console.log(`[setUrlOnWebView] setting url for activeTab "${state.activeTab}" as: "${action.payload.url}"`);
             const { url, tab = state.activeTab } = action.payload;
             state.tabs[tab] = {
@@ -44,21 +43,21 @@ const navigationSlice = createSlice({
                 loadProgress: 0,
             };
         },
-        setProgressOnWebView(state, action: Action<{ progress: number, tab?: string }>) {
+        setProgressOnWebView(state, action: PayloadAction<{ progress: number, tab?: string }>) {
             // console.log(`[setUrlOnWebView] setting progress for activeTab "${state.activeTab}" as: "${action.payload.progress}"`);
             const { progress, tab = state.activeTab } = action.payload;
             state.tabs[tab].loadProgress = progress;
         },
-        goBackOnWebView(state, action: Action<void>){
+        goBackOnWebView(state, action: PayloadAction<void>){
 
         },
-        goForwardOnWebView(state, action: Action<void>){
+        goForwardOnWebView(state, action: PayloadAction<void>){
 
         },
-        reloadWebView(state, action: Action<void>){
+        reloadWebView(state, action: PayloadAction<void>){
 
         },
-        stopWebView(state, action: Action<void>){
+        stopWebView(state, action: PayloadAction<void>){
 
         },
     }

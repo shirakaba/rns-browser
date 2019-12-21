@@ -1,12 +1,8 @@
-import * as React from "react";
-import { createSlice } from "@reduxjs/toolkit";
-import { WebView } from "tns-core-modules/ui/web-view/web-view";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ThunkAction } from "redux-thunk";
+import { Action } from 'redux';
+import { WholeStoreState } from "./store";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
-
-/* Not strictly the most correct typing for an action, but accurate enough to work with*/
-type Action<P, T = { type: string }> = T & {
-    payload: P;
-};
 
 const barsSlice = createSlice({
     name: 'bars',
@@ -21,7 +17,7 @@ const barsSlice = createSlice({
     reducers: {
         setBarsRetraction(
             state,
-            action: Action<{ bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<{ bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
         ){
             const { bars, animated, retraction } = action.payload;
             // We'll ignore animation for now.
@@ -37,13 +33,13 @@ const barsSlice = createSlice({
         },
         setHeaderRetraction(
             state,
-            action: Action<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
         ){
 
         },
         setFooterRetraction(
             state,
-            action: Action<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
+            action: PayloadAction<{ animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }>
         ){
 
         },
@@ -53,7 +49,8 @@ const barsSlice = createSlice({
 export const { } = barsSlice.actions;
 export const barsSliceReducer = barsSlice.reducer;
 
-export function setBarsRetraction(payload: { bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }) {
+export function setBarsRetraction(payload: { bars: "header"|"footer"|"both", animated: boolean, retraction: RetractionState.retracted|RetractionState.revealed }): ThunkAction<void, WholeStoreState, null, Action<string>>
+{
     return function(dispatch, getState) {
         const { bars, animated, retraction } = payload;
 
