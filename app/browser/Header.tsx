@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WebView, ActionBar } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout } from "react-nativescript";
-import { URLBarView, URLBarViewConnected } from "./URLBarView";
+import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
 import { StackLayoutComponentProps } from "react-nativescript/dist/components/StackLayout";
 
