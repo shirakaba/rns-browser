@@ -1,6 +1,6 @@
 import * as React from "react";
-import { WebView, ActionBar, PanGestureEventData, isIOS, isAndroid } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout, $FlexboxLayout } from "react-nativescript";
+import { WebView, ActionBar, PanGestureEventData, isIOS, isAndroid, Device } from "@nativescript/core";
+import { $WebView, $ActionBar, $StackLayout, $Button, $AbsoluteLayout, $ContentView, $GridLayout, $DockLayout, $FlexboxLayout, $Label } from "react-nativescript";
 import { StackLayoutProps, ButtonProps } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { URLBarView } from "./URLBarView";
 import { TopTabsViewController } from "./TopTabsViewController";
@@ -38,27 +38,64 @@ class TopTabsContainer extends React.Component<{}, {}> {
     }
 }
 
+interface NotchAreaCoverProps {
+    urlBarText: string,
+    orientation: "portrait"|"landscape"|"unknown",
+    retraction: RetractionState,
+}
+
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
-class NotchAreaCover extends React.Component<{ orientation: "portrait"|"landscape"|"unknown" } & Omit<StackLayoutComponentProps, "orientation">, {}> {
+class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { orientation, children, ...rest } = this.props;
+        const { orientation, retraction, urlBarText, children, ...rest } = this.props;
+
+        /* Dimensions based on: https://github.com/taisukeh/ScrollingBars */
+        const revealedHeight: number = orientation === "portrait" || Device.deviceType === "Tablet" ? 64 : 44;
+        const retractedHeight: number = orientation === "portrait" ? 22 : 0;
+
         return (
-            <$StackLayout
+            <$FlexboxLayout
+                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                // TODO: animate
+                height={
+                    retraction === RetractionState.revealed ? 
+                        { value: revealedHeight, unit: "dip" } : 
+                        { value: retractedHeight, unit: "dip" }
+                }
                 width={{ value: 100, unit: "%"}}
                 backgroundColor={"gray"}
                 {...rest}
             >
-                <Header
-                    toolbarIsShowing={orientation === "landscape"}
-                    inOverlayMode={false}
-                    slotBackgroundColor={"darkgray"}
-                    textFieldBackgroundColor={"transparent"}
-                    buttonBackgroundColor={"transparent"}
-                />
-            </$StackLayout>
+                {
+                    retraction === RetractionState.revealed ? 
+                        (<Header
+                            toolbarIsShowing={orientation === "landscape"}
+                            inOverlayMode={false}
+                            slotBackgroundColor={"darkgray"}
+                            textFieldBackgroundColor={"transparent"}
+                            buttonBackgroundColor={"transparent"}
+                        />) :
+                        (<$Label text={urlBarText}/>)
+                }
+            </$FlexboxLayout>
         );
     }
 }
+
+
+const NotchAreaCoverConnected = connect(
+    (wholeStoreState: WholeStoreState) => {
+        // console.log(`wholeStoreState`, wholeStoreState);
+        return {
+            urlBarText: wholeStoreState.navigation.urlBarText,
+            retraction: wholeStoreState.bars.header.retraction,
+        };
+    },
+    {},
+)(NotchAreaCover);
+
 
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L110
 class WebViewContainerBackdrop extends React.Component<StackLayoutComponentProps, {}> {
@@ -259,7 +296,7 @@ class Footer extends React.Component<FooterProps & Omit<StackLayoutComponentProp
              * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
                 <$ContentView
-                    className={retraction === RetractionState.revealed ? "" : "retract-anim"}
+                    // TODO: animate
                     height={
                         retraction === RetractionState.revealed ? 
                             { value: 44, unit: "dip" } : 
@@ -324,7 +361,7 @@ export class BrowserViewController extends React.Component<Props, State> {
                 width={{ value: 100, unit: "%"}}
                 height={{ value: 100, unit: "%"}}
             >
-                <NotchAreaCover dock={"top"} orientation={orientation}/>
+                <NotchAreaCoverConnected dock={"top"} orientation={orientation}/>
 
                 <$DockLayout
                     dock={"bottom"}
