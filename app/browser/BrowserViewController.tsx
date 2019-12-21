@@ -68,17 +68,31 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
                 backgroundColor={"gray"}
                 {...rest}
             >
-                {
-                    retraction === RetractionState.revealed ? 
-                        (<Header
-                            toolbarIsShowing={orientation === "landscape"}
-                            inOverlayMode={false}
-                            slotBackgroundColor={"darkgray"}
-                            textFieldBackgroundColor={"transparent"}
-                            buttonBackgroundColor={"transparent"}
-                        />) :
-                        (<$Label text={urlBarText}/>)
-                }
+                <$GridLayout
+                    dock={"top"}
+                    width={{ value: 100, unit: "%"}}
+                    height={{ value: 100, unit: "%" }}
+                    rows={[new ItemSpec(1, "star")]}
+                    columns={[new ItemSpec(1, "star")]}
+                >
+                    <$Label
+                        row={0}
+                        col={0}
+                        text={urlBarText}
+                        width={{ value: 100, unit: "%"}}
+                    />
+                    <Header
+                        row={0}
+                        col={0}
+                        width={{ value: 100, unit: "%"}}
+                        opacity={retraction === RetractionState.revealed ? 1 : 0}
+                        toolbarIsShowing={orientation === "landscape"}
+                        inOverlayMode={false}
+                        slotBackgroundColor={"darkgray"}
+                        textFieldBackgroundColor={"transparent"}
+                        buttonBackgroundColor={"transparent"}
+                    />
+                </$GridLayout>
             </$FlexboxLayout>
         );
     }
