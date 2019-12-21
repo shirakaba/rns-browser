@@ -145,11 +145,6 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
     render(){
         const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", retraction, ...rest } = this.props;
 
-        const revealedButtonSideLength: number = 30;
-        const retractedButtonSideLength: number = 0;
-
-        const useAutoLength: boolean = false; // I flip this boolean to experimentally determine what side length the icons use in practice.
-
         return (
             /* self.view */
             <$FlexboxLayout
@@ -161,11 +156,10 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                 {/* https://developer.apple.com/documentation/uikit/uistackview */}
                 <$FlexboxLayout
                     flexDirection={"row"}
-                    // May need to change to "stretch"
                     alignItems={"center"}
                     justifyContent={"space-around"}
-                    // flexWrap={"nowrap"}
-                    backgroundColor={slotBackgroundColor}
+                    // TODO: animate
+                    backgroundColor={retraction === RetractionState.revealed ? slotBackgroundColor : "transparent"}
                     borderRadius={30}
                     margin={8}
                     flexGrow={1}
@@ -176,16 +170,8 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     {/* privacyIndicator */}
                     <PrivacyIndicator
                         // TODO: animate
-                        height={useAutoLength ? "auto" : {
-                            value: retraction === RetractionState.revealed ? 
-                                revealedButtonSideLength : retractedButtonSideLength,
-                                unit: "dip"
-                        }}
-                        width={useAutoLength ? "auto" : {
-                            value: retraction === RetractionState.revealed ? 
-                                revealedButtonSideLength : retractedButtonSideLength,
-                                unit: "dip"
-                        }}
+                        scaleX={retraction === RetractionState.revealed ? 1 : 0}
+                        scaleY={retraction === RetractionState.revealed ? 1 : 0}
                     />
                     
                     {/* privacyIndicatorSeparator */}
@@ -195,16 +181,8 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     <PageOptionsButton
                         backgroundColor={buttonBackgroundColor}
                         // TODO: animate
-                        height={useAutoLength ? "auto" : {
-                            value: retraction === RetractionState.revealed ? 
-                                revealedButtonSideLength : retractedButtonSideLength,
-                                unit: "dip"
-                        }}
-                        width={useAutoLength ? "auto" : {
-                            value: retraction === RetractionState.revealed ? 
-                                revealedButtonSideLength : retractedButtonSideLength,
-                                unit: "dip"
-                        }}
+                        scaleX={retraction === RetractionState.revealed ? 1 : 0}
+                        scaleY={retraction === RetractionState.revealed ? 1 : 0}
                     />
                 </$FlexboxLayout>
             </$FlexboxLayout>
