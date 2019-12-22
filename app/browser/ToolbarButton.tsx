@@ -36,7 +36,7 @@ export class ToolbarButton extends React.Component<Props & ButtonComponentProps,
                     <$Span
                         color={new Color(textColour)}
                         backgroundColor={new Color(commonBackgroundColor)}
-                        fontFamily="FontAwesome"
+                        fontFamily="Font Awesome 5 Free"
                         text={text}
                     />
                 </$FormattedString>
