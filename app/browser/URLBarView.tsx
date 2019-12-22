@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView, ActionBar, StackLayout } from "@nativescript/core";
-import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout } from "react-nativescript";
+import { $WebView, $ActionBar, $StackLayout, $Button, $FlexboxLayout, $GridLayout } from "react-nativescript";
 import { GradientProgressBarConnected } from "../Widgets/GradientProgressBar";
 import { ToolbarButton } from "./ToolbarButton";
 import { AutocompleteTextField } from "~/Widgets/AutocompleteTextField";
@@ -9,6 +9,7 @@ import { ButtonComponentProps } from "react-nativescript/dist/components/Button"
 import { BackButtonConnected, ForwardButtonConnected, StopReloadButtonConnected, TabsButtonConnected, MenuButtonConnected, CancelButtonConnected } from "./BarButtons";
 import { connect } from "react-redux";
 import { WholeStoreState } from "~/store/store";
+import { ItemSpec } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
 
 /* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/URLBarView.swift */
 
@@ -74,28 +75,31 @@ export class URLBarView extends React.Component<Props, State>{
         if(inOverlayMode){
             // i.e. URL bar's text field has been focused and the browser displays an overlay over the webpage.
             stackContents = (
-                <$FlexboxLayout
-                    flexDirection={"row"}
-                    justifyContent={"space-around"}
-                    alignItems={"center"}
-                    height={"auto"}
-                    width={{ value: 100, unit: "%" }}
+                <$GridLayout
+                    rows={[new ItemSpec(1, "star")]}
+                    columns={[
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                    ]}
                 >
                     {/* AKA locationTextField */}
                     <ToolbarTextField/>
                     <CancelButtonConnected backgroundColor={buttonBackgroundColor}/>
-                </$FlexboxLayout>
+                </$GridLayout>
             );
         } else if(toolbarIsShowing){
             // i.e. landscape (so show all the items that the footer would normally handle)
             stackContents = (
-                <$FlexboxLayout
-                    flexDirection={"row"}
-                    justifyContent={"space-around"}
-                    alignItems={"center"}
-                    height={"auto"}
-                    width={{ value: 100, unit: "%" }}
-                    // flexWrap={"nowrap"}
+                <$GridLayout
+                    rows={[new ItemSpec(1, "star")]}
+                    columns={[
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                    ]}
                 >
                     <BackButtonConnected backgroundColor={buttonBackgroundColor}/>
                     <ForwardButtonConnected backgroundColor={buttonBackgroundColor}/>
@@ -104,21 +108,20 @@ export class URLBarView extends React.Component<Props, State>{
                     <TabLocationViewConnected slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                     <TabsButtonConnected backgroundColor={buttonBackgroundColor}/>
                     <MenuButtonConnected backgroundColor={buttonBackgroundColor}/>
-                </$FlexboxLayout>
+                </$GridLayout>
             );
         } else {
             // i.e. portrait (so hide all the items that the footer will be handling)
             stackContents = (
-                <$FlexboxLayout
-                    flexDirection={"row"}
-                    justifyContent={"space-around"}
-                    alignItems={"center"}
-                    height={"auto"}
-                    width={{ value: 100, unit: "%" }}
+                <$GridLayout
+                    rows={[new ItemSpec(1, "star")]}
+                    columns={[
+                        new ItemSpec(1, "star"),
+                    ]}
                 >
                     {/* AKA locationView. */}
                     <TabLocationViewConnected slotBackgroundColor={slotBackgroundColor} buttonBackgroundColor={buttonBackgroundColor} textFieldBackgroundColor={textFieldBackgroundColor} flexGrow={1}/>
-                </$FlexboxLayout>
+                </$GridLayout>
             );
         }
 

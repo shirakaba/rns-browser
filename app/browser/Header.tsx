@@ -51,7 +51,7 @@ class UrlBarTopTabsContainer extends React.Component<UrlBarTopTabsContainerProps
 
         return (
             // UIView(frame: CGRect.zero)
-            <$StackLayout {...rest}>
+            <$StackLayout orientation={"vertical"} {...rest}>
                 {/* urlBar */}
                 <URLBarView
                     inOverlayMode={inOverlayMode}

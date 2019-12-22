@@ -75,7 +75,9 @@ class DisplayTextField extends React.Component<DisplayTextFieldProps & TextField
         return (
             <$TextField
                 {...rest}
+                backgroundColor={"orange"}
                 text={urlBarText}
+                textAlignment={"right"}
                 autocorrect={false}
                 autocapitalizationType={"none"}
                 keyboardType={"url"}
@@ -154,10 +156,16 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                 {/* self.contentView */}
                 {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
                 {/* https://developer.apple.com/documentation/uikit/uistackview */}
-                <$FlexboxLayout
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    justifyContent={"space-around"}
+                <$GridLayout
+                    rows={[new ItemSpec(1, "star")]}
+                    columns={[
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "auto"),
+                        new ItemSpec(1, "star"),
+                        new ItemSpec(1, "auto"),
+                    ]}
                     // TODO: animate
                     backgroundColor={retraction === RetractionState.revealed ? slotBackgroundColor : "transparent"}
                     borderRadius={30}
@@ -165,26 +173,28 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     flexGrow={1}
                 >
                     {/* frontSpaceView */}
-                    <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
+                    <$ContentView col={0} width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
                     {/* privacyIndicator */}
                     <PrivacyIndicator
+                        col={1}
                         // TODO: animate
                         scaleX={retraction === RetractionState.revealed ? 1 : 0}
                         scaleY={retraction === RetractionState.revealed ? 1 : 0}
                     />
                     
                     {/* privacyIndicatorSeparator */}
-                    <$ContentView width={{ value: 3, unit: "dip" }}/>
-                    <LockImageView locked={true}/>
-                    <UrlTextField backgroundColor={textFieldBackgroundColor} flexGrow={1}/>
+                    <$ContentView col={2} width={{ value: 3, unit: "dip" }}/>
+                    <LockImageView col={3} locked={true}/>
+                    <UrlTextField col={4} backgroundColor={textFieldBackgroundColor} width={{ value: 100, unit: "%" }}/>
                     <PageOptionsButton
+                        col={5}
                         backgroundColor={buttonBackgroundColor}
                         // TODO: animate
                         scaleX={retraction === RetractionState.revealed ? 1 : 0}
                         scaleY={retraction === RetractionState.revealed ? 1 : 0}
                     />
-                </$FlexboxLayout>
+                </$GridLayout>
             </$FlexboxLayout>
         );
     }
