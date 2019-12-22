@@ -14,13 +14,11 @@ const barsSlice = createSlice({
     initialState: {
         header: {
             retraction: RetractionState.revealed,
-            keyframes: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-            keyframe: 11,
+            percentRevealed: 100,
         },
         footer: {
             retraction: RetractionState.revealed,
-            keyframes: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-            keyframe: 11,
+            percentRevealed: 100,
         },
     },
     reducers: {
@@ -32,7 +30,7 @@ const barsSlice = createSlice({
 
             state.header.retraction = retraction;
             if(retraction === RetractionState.retracted || retraction === RetractionState.revealed){
-                state.header.keyframe = state.header.keyframes.length - 1;
+                state.header.percentRevealed = retraction === RetractionState.retracted ? 0 : 100;
             }
         },
         setFooterRetraction(
@@ -43,7 +41,7 @@ const barsSlice = createSlice({
 
             state.footer.retraction = retraction;
             if(retraction === RetractionState.retracted || retraction === RetractionState.revealed){
-                state.footer.keyframe = state.footer.keyframes.length - 1;
+                state.footer.percentRevealed = retraction === RetractionState.retracted ? 0 : 100;
             }
         },
         advanceHeaderRetraction(
@@ -57,23 +55,10 @@ const barsSlice = createSlice({
                 return;
             }
 
-            // if(state.header.keyframe === state.header.keyframes.length - 1){
-            //     // Already at final position
-            //     return;
-            // }
-
             if(retraction === RetractionState.revealed){
-                if(state.header.keyframe === state.header.keyframes.length - 1){
-                    // Already at final position
-                    return;
-                }
-                state.header.keyframe += 1;
+                state.header.percentRevealed = Math.min(100, state.header.percentRevealed + 10);
             } else {
-                if(state.header.keyframe === 0){
-                    // Already at starting position
-                    return;
-                }
-                state.header.keyframe -= 1;
+                state.header.percentRevealed = Math.max(0, state.header.percentRevealed - 10);
             }
         },
         advanceFooterRetraction(
@@ -87,12 +72,11 @@ const barsSlice = createSlice({
                 return;
             }
 
-            if(state.footer.keyframe === state.footer.keyframes[state.footer.keyframes.length - 1]){
-                // Already at final position
-                return;
+            if(retraction === RetractionState.revealed){
+                state.footer.percentRevealed = Math.min(100, state.footer.percentRevealed + 10);
+            } else {
+                state.footer.percentRevealed = Math.max(0, state.footer.percentRevealed - 10);
             }
-
-            state.footer.keyframe += 1;
         },
     }
 });
@@ -135,7 +119,7 @@ export function setHeaderRetraction(args: SetBarRetractionArgs & AnimatedArg): A
             return Promise.resolve();
         }
 
-        console.log(`[setHeaderRetraction] continuing, with animated ${true}`);
+        // console.log(`[setHeaderRetraction] continuing, with animated ${true}`);
 
         return animated ? 
             dispatch(animateHeaderRetraction(retraction)) :
@@ -183,11 +167,11 @@ export function animateBarsRetraction(args: SetBarsRetractionArgs & AnimatedArg)
 }
 
 export function animateHeaderRetraction(retractionTarget: RetractionTarget): AppThunk {
-    console.log(`[animateHeaderRetraction] got into thunk`);
+    // console.log(`[animateHeaderRetraction] got into thunk`);
 
     return function(dispatch, getState) {
 
-        console.log(`[animateHeaderRetraction] with retractionTarget ${retractionTarget} and retraction ${getState().bars.header.retraction}`);
+        // console.log(`[animateHeaderRetraction] with retractionTarget ${retractionTarget} and retraction ${getState().bars.header.retraction}`);
 
         if(getState().bars.header.retraction === retractionTarget){
             return Promise.resolve();
@@ -201,6 +185,9 @@ export function animateHeaderRetraction(retractionTarget: RetractionTarget): App
                 ))
             );
         })
+        .then(() => new Promise((resolve, reject) => {
+            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
+        }))
         .then(() => new Promise((resolve, reject) => {
             setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
         }))

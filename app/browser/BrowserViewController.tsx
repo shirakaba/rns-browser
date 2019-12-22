@@ -39,7 +39,7 @@ class TopTabsContainer extends React.Component<{}, {}> {
 }
 
 interface NotchAreaCoverProps {
-    animationProgress: number,
+    percentRevealed: number,
     urlBarText: string,
     orientation: "portrait"|"landscape"|"unknown",
     retraction: RetractionState,
@@ -48,18 +48,17 @@ interface NotchAreaCoverProps {
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
 class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { orientation, retraction, urlBarText, animationProgress, children, ...rest } = this.props;
+        const { orientation, retraction, urlBarText, percentRevealed, children, ...rest } = this.props;
 
         /* Dimensions based on: https://github.com/taisukeh/ScrollingBars */
         const revealedHeight: number = orientation === "portrait" || Device.deviceType === "Tablet" ? 64 : 44;
         const retractedHeight: number = orientation === "portrait" ? 30 : 0;
 
-        const isRevealing: boolean = retraction === RetractionState.revealed || retraction === RetractionState.revealing;
         const heightDiff: number = revealedHeight - retractedHeight;
-        const factor: number = isRevealing ? animationProgress : 1 - animationProgress;
+        const factor: number = percentRevealed / 100;
         const animatedHeight: number = (factor * heightDiff) + retractedHeight;
 
-        console.log(`[NotchAreaCover] animatedHeight: ${animatedHeight}; ${factor} * ${heightDiff} + ${retractedHeight}; retraction ${retraction}`);
+        // console.log(`[NotchAreaCover] animatedHeight: ${animatedHeight}; ${factor} * ${heightDiff} + ${retractedHeight}; retraction ${retraction}`);
 
         return (
             <$FlexboxLayout
@@ -89,11 +88,11 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
 const NotchAreaCoverConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
-        console.log(`animationProgress: ${wholeStoreState.bars.header.keyframes}[${wholeStoreState.bars.header.keyframe}]`);
+        // console.log(`percentRevealed: ${wholeStoreState.bars.header.percentRevealed}`);
         return {
             urlBarText: wholeStoreState.navigation.urlBarText,
             retraction: wholeStoreState.bars.header.retraction,
-            animationProgress: wholeStoreState.bars.header.keyframes[wholeStoreState.bars.header.keyframe]
+            percentRevealed: wholeStoreState.bars.header.percentRevealed,
         };
     },
     {},
