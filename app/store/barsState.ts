@@ -76,6 +76,17 @@ export function setHeaderRetraction(args: SetBarRetractionArgs & AnimatedArg): A
     };
 }
 
+export function animateHeaderRetraction(retraction: RetractionTarget): AppThunk {
+    return function(dispatch, getState) {
+
+        if(getState().bars.header.retraction === retraction){
+            return Promise.resolve();
+        }
+
+        return dispatch(barsSlice.actions.setHeaderRetraction(retraction));
+    };
+}
+
 export function setFooterRetraction(args: SetBarRetractionArgs & AnimatedArg): AppThunk {
     return function(dispatch, getState) {
         const { animated, retraction } = args;
