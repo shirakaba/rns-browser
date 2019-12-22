@@ -78,6 +78,7 @@ class DisplayTextField extends React.Component<DisplayTextFieldProps & TextField
                 text={urlBarText}
                 autocorrect={false}
                 autocapitalizationType={"none"}
+                backgroundColor={"orange"}
                 keyboardType={"url"}
                 returnKeyType={"go"}
                 onTextChange={this.onTextChange}
@@ -146,14 +147,6 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
         const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", retraction, ...rest } = this.props;
 
         return (
-            /* self.view */
-            <$FlexboxLayout
-                iosOverflowSafeArea={false}
-                {...rest}
-            >
-                {/* self.contentView */}
-                {/* https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/TabLocationView.swift#L149 */}
-                {/* https://developer.apple.com/documentation/uikit/uistackview */}
                 <$FlexboxLayout
                     flexDirection={"row"}
                     alignItems={"center"}
@@ -185,7 +178,6 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                         scaleY={retraction === RetractionState.revealed ? 1 : 0}
                     />
                 </$FlexboxLayout>
-            </$FlexboxLayout>
         );
     }
 }
