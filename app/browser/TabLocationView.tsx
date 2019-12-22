@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WebView, ActionBar, StackLayout, EventData, TextField } from "@nativescript/core";
+import { WebView, ActionBar, StackLayout, EventData, TextField, Color } from "@nativescript/core";
 import { $WebView, $ActionBar, $StackLayout, $FlexboxLayout, $ContentView, $Image, $TextField, $GridLayout, $TextView } from "react-nativescript";
 import { ToolbarButton } from "./ToolbarButton";
 import { PrivacyIndicatorView } from "~/Views/PrivacyIndicatorView";
@@ -13,6 +13,7 @@ import { WholeStoreState } from "~/store/store";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view.ios";
 
 interface Props {
+    percentRevealed: number,
     retraction: RetractionState,
     slotBackgroundColor?: string,
     buttonBackgroundColor?: string,
@@ -143,7 +144,28 @@ class PrivacyIndicator extends React.Component<{} & ButtonComponentProps, {}> {
 export class TabLocationView extends React.Component<Props & FlexboxLayoutComponentProps, State>{
 
     render(){
-        const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", retraction, ...rest } = this.props;
+        const { slotBackgroundColor = "purple", buttonBackgroundColor = "transparent", textFieldBackgroundColor = "white", retraction, percentRevealed, ...rest } = this.props;
+
+        const factor: number = percentRevealed / 100;
+
+        const revealedScale: number = 1;
+        const retractedScale: number = 0;
+        const scaleDiff: number = revealedScale - retractedScale;
+        const animatedScale: number = (factor * scaleDiff) + retractedScale;
+
+        const slotBackgroundColorObj: Color = new Color(slotBackgroundColor);
+        
+        const revealedSlotBackgroundColorAlpha: number = 1;
+        const retractedSlotBackgroundColorAlpha: number = 0;
+        const slotBackgroundColorAlphaDiff: number = revealedSlotBackgroundColorAlpha - retractedSlotBackgroundColorAlpha;
+        const animatedSlotBackgroundColorAlpha: number = (factor * 255 * slotBackgroundColorAlphaDiff) + retractedSlotBackgroundColorAlpha;
+        const animatedSlotBackgroundColor: Color = new Color(
+            animatedSlotBackgroundColorAlpha,
+            slotBackgroundColorObj.r,
+            slotBackgroundColorObj.g,
+            slotBackgroundColorObj.b,
+        );
+        // console.log(`animatedSlotBackgroundColor`, animatedSlotBackgroundColor);
 
         return (
             /* self.view */
@@ -158,8 +180,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     flexDirection={"row"}
                     alignItems={"center"}
                     justifyContent={"space-around"}
-                    // TODO: animate
-                    backgroundColor={retraction === RetractionState.revealed ? slotBackgroundColor : "transparent"}
+                    backgroundColor={animatedSlotBackgroundColor}
                     borderRadius={30}
                     margin={8}
                     flexGrow={1}
@@ -168,11 +189,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     <$ContentView width={{ value: TabLocationViewUX.Spacing, unit: "dip" }}/>
 
                     {/* privacyIndicator */}
-                    <PrivacyIndicator
-                        // TODO: animate
-                        scaleX={retraction === RetractionState.revealed ? 1 : 0}
-                        scaleY={retraction === RetractionState.revealed ? 1 : 0}
-                    />
+                    <PrivacyIndicator scaleX={animatedScale} scaleY={animatedScale}/>
                     
                     {/* privacyIndicatorSeparator */}
                     <$ContentView width={{ value: 3, unit: "dip" }}/>
@@ -180,9 +197,8 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
                     <UrlTextField backgroundColor={textFieldBackgroundColor} flexGrow={1}/>
                     <PageOptionsButton
                         backgroundColor={buttonBackgroundColor}
-                        // TODO: animate
-                        scaleX={retraction === RetractionState.revealed ? 1 : 0}
-                        scaleY={retraction === RetractionState.revealed ? 1 : 0}
+                        scaleX={animatedScale}
+                        scaleY={animatedScale}
                     />
                 </$FlexboxLayout>
             </$FlexboxLayout>
@@ -195,6 +211,7 @@ export const TabLocationViewConnected = connect(
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
             retraction: wholeStoreState.bars.header.retraction,
+            percentRevealed: wholeStoreState.bars.footer.percentRevealed,
         };
     },
     {},
