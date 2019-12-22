@@ -66,7 +66,6 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
                 // Best to be flex-end (stack children upon bottom edge) so that the loading bar hangs on the edge.
                 justifyContent={"flex-end"}
                 alignItems={"center"}
-                // TODO: animate
                 height={{ value: animatedHeight, unit: "dip" }}
                 width={{ value: 100, unit: "%"}}
                 backgroundColor={"gray"}
@@ -283,6 +282,7 @@ class AlertStackView extends React.Component<StackLayoutComponentProps, {}> {
 }
 
 interface FooterProps {
+    percentRevealed: number,
     orientation: "portrait"|"landscape"|"unknown",
     retraction: RetractionState,
     showToolbar: boolean,
@@ -291,19 +291,21 @@ interface FooterProps {
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L103
 class Footer extends React.Component<FooterProps & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { retraction, showToolbar, orientation, children, ...rest } = this.props;
+        const { retraction, showToolbar, orientation, percentRevealed, children, ...rest } = this.props;
+
+        const revealedHeight: number = 44;
+        const retractedHeight: number = 0;
+
+        const heightDiff: number = revealedHeight - retractedHeight;
+        const factor: number = percentRevealed / 100;
+        const animatedHeight: number = (factor * heightDiff) + retractedHeight;
 
         if(showToolbar){
             /* Warning: I've tried other layouts (StackLayout and FlexboxLayout) here, but they shift
              * horizontally after rotation. Only ContentView seems to escape this bug. */
             return (
                 <$ContentView
-                    // TODO: animate
-                    height={
-                        retraction === RetractionState.revealed ? 
-                            { value: 44, unit: "dip" } : 
-                            { value: 0, unit: "dip" }
-                    }
+                    height={{ value: animatedHeight, unit: "dip" }}
                     width={{ value: 100, unit: "%" }}
                     {...rest}
                 >
@@ -325,6 +327,7 @@ const FooterConnected = connect(
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
             retraction: wholeStoreState.bars.footer.retraction,
+            percentRevealed: wholeStoreState.bars.footer.percentRevealed,
         };
     },
     {},
