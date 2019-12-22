@@ -15,7 +15,7 @@ import { WholeStoreState } from "~/store/store";
 import { webViews, updateUrlBarText, TabStateRecord, setProgressOnWebView } from "~/store/navigationState";
 import { BetterWebView } from "~/components/BetterWebView";
 import { ProgressEventData } from "~/NativeScriptCoreUIForks/WebView/web-view";
-import { setHeaderRetraction, setFooterRetraction, setBarsRetraction } from "~/store/barsState";
+import { setBarsRetraction } from "~/store/barsState";
 import { BarRetractionRecommendationEventData } from "~/nativeElements/BarAwareWebView/bar-aware-web-view";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
 
@@ -39,6 +39,7 @@ class TopTabsContainer extends React.Component<{}, {}> {
 }
 
 interface NotchAreaCoverProps {
+    animationProgress: number,
     urlBarText: string,
     orientation: "portrait"|"landscape"|"unknown",
     retraction: RetractionState,
@@ -47,11 +48,13 @@ interface NotchAreaCoverProps {
 // https://github.com/cliqz/user-agent-ios/blob/develop/Client/Frontend/Browser/BrowserViewController.swift#L61
 class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLayoutComponentProps, "orientation">, {}> {
     render(){
-        const { orientation, retraction, urlBarText, children, ...rest } = this.props;
+        const { orientation, retraction, urlBarText, animationProgress, children, ...rest } = this.props;
 
         /* Dimensions based on: https://github.com/taisukeh/ScrollingBars */
         const revealedHeight: number = orientation === "portrait" || Device.deviceType === "Tablet" ? 64 : 44;
         const retractedHeight: number = orientation === "portrait" ? 30 : 0;
+
+        const animatedHeight: number = (retraction === RetractionState.revealed || retraction === RetractionState.revealing ? animationProgress : 1 - animationProgress) * (revealedHeight - retractedHeight) * revealedHeight;
 
         return (
             <$FlexboxLayout
@@ -60,11 +63,7 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
                 justifyContent={"flex-end"}
                 alignItems={"center"}
                 // TODO: animate
-                height={
-                    retraction === RetractionState.revealed ? 
-                        { value: revealedHeight, unit: "dip" } : 
-                        { value: retractedHeight, unit: "dip" }
-                }
+                height={{ value: animatedHeight, unit: "dip" }}
                 width={{ value: 100, unit: "%"}}
                 backgroundColor={"gray"}
                 {...rest}
@@ -88,6 +87,7 @@ const NotchAreaCoverConnected = connect(
         return {
             urlBarText: wholeStoreState.navigation.urlBarText,
             retraction: wholeStoreState.bars.header.retraction,
+            animationProgress: wholeStoreState.bars.header.keyframes[wholeStoreState.bars.header.keyframe]
         };
     },
     {},
@@ -135,7 +135,7 @@ class WebViewContainer extends React.Component<WebViewContainerProps & StackLayo
     // };
 
     private readonly onBarRetractionRecommendation = (e: BarRetractionRecommendationEventData) => {
-        console.log(`WebView barsShouldRetract ${e.barsShouldRetract}`);
+        // console.log(`WebView barsShouldRetract ${e.barsShouldRetract}`);
         
         if(e.barsShouldRetract){
             // Gesture flings the scrollView upwards (scrolls downwards)
