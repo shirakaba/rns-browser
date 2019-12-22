@@ -57,12 +57,24 @@ const barsSlice = createSlice({
                 return;
             }
 
-            if(state.header.keyframe === state.header.keyframes[state.header.keyframes.length - 1]){
-                // Already at final position
-                return;
-            }
+            // if(state.header.keyframe === state.header.keyframes.length - 1){
+            //     // Already at final position
+            //     return;
+            // }
 
-            state.header.keyframe += 1;
+            if(retraction === RetractionState.revealed){
+                if(state.header.keyframe === state.header.keyframes.length - 1){
+                    // Already at final position
+                    return;
+                }
+                state.header.keyframe += 1;
+            } else {
+                if(state.header.keyframe === 0){
+                    // Already at starting position
+                    return;
+                }
+                state.header.keyframe -= 1;
+            }
         },
         advanceFooterRetraction(
             state,
@@ -119,7 +131,7 @@ export function setHeaderRetraction(args: SetBarRetractionArgs & AnimatedArg): A
         // console.log(`[setHeaderRetraction] with retractionTarget ${retraction} and retraction ${getState().bars.header.retraction}`);
 
         if(getState().bars.header.retraction === retraction){
-            console.log(`[setHeaderRetraction] bailing out, as retraction already met.`);
+            // console.log(`[setHeaderRetraction] bailing out, as retraction already met.`);
             return Promise.resolve();
         }
 

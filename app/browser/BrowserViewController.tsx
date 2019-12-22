@@ -54,7 +54,12 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
         const revealedHeight: number = orientation === "portrait" || Device.deviceType === "Tablet" ? 64 : 44;
         const retractedHeight: number = orientation === "portrait" ? 30 : 0;
 
-        const animatedHeight: number = (retraction === RetractionState.revealed || retraction === RetractionState.revealing ? animationProgress : 1 - animationProgress) * (revealedHeight - retractedHeight) * revealedHeight;
+        const isRevealing: boolean = retraction === RetractionState.revealed || retraction === RetractionState.revealing;
+        const heightDiff: number = revealedHeight - retractedHeight;
+        const factor: number = isRevealing ? animationProgress : 1 - animationProgress;
+        const animatedHeight: number = (factor * heightDiff) + retractedHeight;
+
+        console.log(`[NotchAreaCover] animatedHeight: ${animatedHeight}; ${factor} * ${heightDiff} + ${retractedHeight}; retraction ${retraction}`);
 
         return (
             <$FlexboxLayout
@@ -84,6 +89,7 @@ class NotchAreaCover extends React.Component<NotchAreaCoverProps & Omit<StackLay
 const NotchAreaCoverConnected = connect(
     (wholeStoreState: WholeStoreState) => {
         // console.log(`wholeStoreState`, wholeStoreState);
+        console.log(`animationProgress: ${wholeStoreState.bars.header.keyframes}[${wholeStoreState.bars.header.keyframe}]`);
         return {
             urlBarText: wholeStoreState.navigation.urlBarText,
             retraction: wholeStoreState.bars.header.retraction,
