@@ -3,6 +3,7 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from 'redux';
 import { WholeStoreState, AppThunk } from "./store";
 import { RetractionState } from "~/nativeElements/BarAwareWebView/bar-aware-web-view-interfaces";
+import { select, take, put, call, fork, cancel, cancelled, delay, takeLatest } from 'redux-saga/effects';
 
 type RetractionTarget = RetractionState.retracted|RetractionState.revealed;
 type AnimatedArg = { animated: boolean };
@@ -22,60 +23,47 @@ const barsSlice = createSlice({
         },
     },
     reducers: {
-        setHeaderRetraction(
+        setBarRetraction(
             state,
-            action: PayloadAction<RetractionState>
+            action: PayloadAction<{ retraction: RetractionState } & { bar: "header"|"footer" }>
         ){
-            const retraction = action.payload;
+            const { retraction, bar } = action.payload;
 
-            state.header.retraction = retraction;
+            const barState = bar === "header" ? state.header : state.footer;
+
+            barState.retraction = retraction;
             if(retraction === RetractionState.retracted || retraction === RetractionState.revealed){
-                state.header.percentRevealed = retraction === RetractionState.retracted ? 0 : 100;
+                barState.percentRevealed = retraction === RetractionState.retracted ? 0 : 100;
             }
         },
-        setFooterRetraction(
+        advanceBarRetraction(
             state,
-            action: PayloadAction<RetractionState>
+            action: PayloadAction<{ retraction: RetractionTarget } & { bar: "header"|"footer" } & { advancePercent: number }>
         ){
-            const retraction = action.payload;
+            const { retraction, bar, advancePercent } = action.payload;
 
-            state.footer.retraction = retraction;
-            if(retraction === RetractionState.retracted || retraction === RetractionState.revealed){
-                state.footer.percentRevealed = retraction === RetractionState.retracted ? 0 : 100;
-            }
-        },
-        advanceHeaderRetraction(
-            state,
-            action: PayloadAction<RetractionTarget>
-        ){
-            const retraction = action.payload;
+            const barState = bar === "header" ? state.header : state.footer;
 
-            if(retraction === state.header.retraction){
+            if(retraction === barState.retraction){
                 // Already at retraction target
                 return;
             }
 
-            if(retraction === RetractionState.revealed){
-                state.header.percentRevealed = Math.min(100, state.header.percentRevealed + 10);
-            } else {
-                state.header.percentRevealed = Math.max(0, state.header.percentRevealed - 10);
-            }
-        },
-        advanceFooterRetraction(
-            state,
-            action: PayloadAction<RetractionTarget>
-        ){
-            const retraction = action.payload;
-
-            if(retraction === state.footer.retraction){
-                // Already at retraction target
-                return;
-            }
 
             if(retraction === RetractionState.revealed){
-                state.footer.percentRevealed = Math.min(100, state.footer.percentRevealed + 10);
+                barState.percentRevealed = Math.min(100, barState.percentRevealed + advancePercent);
+                // console.log(`[advanceHeaderRetraction] set barState.percentRevealed to ${barState.percentRevealed}`);
+                if(barState.percentRevealed === 100){
+                    barState.retraction = RetractionState.revealed;
+                    // console.log(`[advanceHeaderRetraction] set barState.retraction to ${barState.retraction}`);
+                }
             } else {
-                state.footer.percentRevealed = Math.max(0, state.footer.percentRevealed - 10);
+                barState.percentRevealed = Math.max(0, barState.percentRevealed - advancePercent);
+                // console.log(`[advanceHeaderRetraction] set barState.percentRevealed to ${barState.percentRevealed}`);
+                if(barState.percentRevealed === 0){
+                    barState.retraction = RetractionState.retracted;
+                    // console.log(`[advanceHeaderRetraction] set barState.retraction to ${barState.retraction}`);
+                }
             }
         },
     }
@@ -95,195 +83,160 @@ export function setBarsRetraction(args: SetBarsRetractionArgs & AnimatedArg): Ap
 
         if(bars === "both"){
             return Promise.all([
-                dispatch(setHeaderRetraction(dispatchArgs)),
-                dispatch(setFooterRetraction(dispatchArgs)),
+                // dispatch(setHeaderRetraction(dispatchArgs)),
+                dispatch({
+                    type: retraction === RetractionState.retracted ? RETRACT_HEADER : REVEAL_HEADER,
+                    payload: { bar: "header" }
+                }),
+                dispatch({
+                    type: retraction === RetractionState.retracted ? RETRACT_FOOTER : REVEAL_FOOTER,
+                    payload: { bar: "footer" }
+                }),
             ]);
         } else {
-            return dispatch(
-                bars === "header" ?
-                    setHeaderRetraction(dispatchArgs) :
-                    setFooterRetraction(dispatchArgs)
-            );
+            return dispatch({
+                type: retraction === RetractionState.retracted ? 
+                    (bars === "header" ? RETRACT_HEADER : RETRACT_FOOTER) : 
+                    (bars === "header" ? REVEAL_HEADER : REVEAL_FOOTER),
+                payload: { bar: bars }
+            });
         }
     };
 }
 
-export function setHeaderRetraction(args: SetBarRetractionArgs & AnimatedArg): AppThunk {
-    return function(dispatch, getState) {
-        const { animated, retraction } = args;
+const RETRACT_HEADER = "RETRACT_HEADER" as const;
+const HEADER_RETRACTED = "HEADER_RETRACTED" as const;
+const HEADER_REVEALED = "HEADER_REVEALED" as const;
+const REVEAL_HEADER = "REVEAL_HEADER" as const;
 
-        // console.log(`[setHeaderRetraction] with retractionTarget ${retraction} and retraction ${getState().bars.header.retraction}`);
+const RETRACT_FOOTER = "RETRACT_FOOTER" as const;
+const FOOTER_RETRACTED = "FOOTER_RETRACTED" as const;
+const FOOTER_REVEALED = "FOOTER_REVEALED" as const;
+const REVEAL_FOOTER = "REVEAL_FOOTER" as const;
 
-        if(getState().bars.header.retraction === retraction){
-            // console.log(`[setHeaderRetraction] bailing out, as retraction already met.`);
-            return Promise.resolve();
+// worker Saga: will be fired on RETRACT_HEADER actions
+function* advanceBarAnimation(type: "RETRACT_HEADER"|"REVEAL_HEADER"|"RETRACT_FOOTER"|"REVEAL_FOOTER") {
+    const durationMs: number = 500;
+    const fps: number = 60;
+    const startTime: number = Date.now();
+    
+    let midwayActionType: RetractionState.retracting|RetractionState.revealing;
+    let bar: "header"|"footer";
+    let completedActionType: "HEADER_RETRACTED"|"HEADER_REVEALED"|"FOOTER_RETRACTED"|"FOOTER_REVEALED";
+    let targetRetractionState: RetractionState.retracted|RetractionState.revealed;
+    
+    switch(type){
+        case "RETRACT_HEADER":
+            bar = "header";
+            completedActionType = HEADER_RETRACTED;
+            midwayActionType = RetractionState.retracting;
+            targetRetractionState = RetractionState.retracted;
+            break;
+        case "REVEAL_HEADER":
+            bar = "header";
+            completedActionType = HEADER_REVEALED;
+            midwayActionType = RetractionState.revealing;
+            targetRetractionState = RetractionState.revealed;
+            break;
+        case "RETRACT_FOOTER":
+            bar = "footer";
+            completedActionType = FOOTER_RETRACTED;
+            midwayActionType = RetractionState.retracting;
+            targetRetractionState = RetractionState.retracted;
+            break;
+        case "REVEAL_FOOTER":
+            bar = "footer";
+            completedActionType = FOOTER_REVEALED;
+            midwayActionType = RetractionState.revealing;
+            targetRetractionState = RetractionState.revealed;
+            break;
+    }
+
+    try {
+        // while (true) {
+            // put() means dispatch()
+            yield put(barsSlice.actions.setBarRetraction({ bar, retraction: midwayActionType }));
+
+            while (true) {
+                const timePassedMs: number = Date.now() - startTime;
+                const progressPercent: number = 100 * timePassedMs / durationMs;
+
+                yield put(barsSlice.actions.advanceBarRetraction({ bar, retraction: targetRetractionState, advancePercent: progressPercent }));
+                const state: WholeStoreState = yield select();
+                const barState = bar === "header" ? state.bars.header : state.bars.footer;
+                if(barState.retraction === targetRetractionState){
+                    // console.log(`[advanceBarAnimation] targetRetractionState ${targetRetractionState}, as state was found to be ${barState.retraction}; shall action ${completedActionType}`);
+                    yield put({ type: completedActionType });
+
+                    // Goes to the line following: `yield take([HEADER_RETRACTED, REVEAL_HEADER]);`
+                } else {
+                    // console.log(`[advanceBarAnimation] continuing, as state was found to be`, barState.retraction);
+                    yield delay(durationMs / fps);
+                    // Unless an opposite-direction action interrupts, will simply continue looping around.
+                }
+            }
+        // }
+    } finally {
+        /* I'm not totally sure that cancellation of the worker saga has to involve a try-catch... */
+        // console.log(`[advanceBarAnimation] got into finally{} block.`);
+        
+        if (yield cancelled()){
+            // console.log(`[advanceBarAnimation] found cancelled() was true.`);
+            // yield put(actions.requestFailure('Sync cancelled!'))
+            /* To my understanding, cancel(advanceBarAnimationTask) will cause an error to be thrown,
+             * which will break the generator out of the while(true) loop..? */
         }
+    }
+}
 
-        // console.log(`[setHeaderRetraction] continuing, with animated ${true}`);
+export function* watchForHeaderRetract() {
+    // console.log(`watchForHeaderRetract 1`);
+    // takeLatest() seems more appropriate... And not sure about the while loop at all.
+    while (true){
+        const { type: requestType } = yield take([RETRACT_HEADER, REVEAL_HEADER]);
+        const oppositeType = requestType === "RETRACT_HEADER" ? REVEAL_HEADER : RETRACT_HEADER;
+        const completedActionType = requestType === "RETRACT_HEADER" ? HEADER_RETRACTED : HEADER_REVEALED;
+        // console.log(`watchForHeaderRetract 2`, requestType);
+        // Starts the task in the background ("'fork' effects are non-blocking").
+        const advanceHeaderAnimationTask = yield fork(advanceBarAnimation.bind(null, requestType));
 
-        return animated ? 
-            dispatch(animateHeaderRetraction(retraction)) :
-            dispatch(barsSlice.actions.setHeaderRetraction(retraction));
-    };
+        // console.log(`watchForHeaderRetract 3`);
+        /* Or: https://redux-saga.js.org/docs/advanced/RacingEffects.html */
+        // Wait for the animation to complete, or for the user to interrupt it
+        const { type: settleType } = yield take([completedActionType, oppositeType]);
+        // console.log(`watchForHeaderRetract 4 settleType ${settleType}`);
+        // user clicked stop. cancel the background task
+        // this will cause the forked bgSync task to jump into its finally block
+        yield cancel(advanceHeaderAnimationTask);
+        // Execution will reach this line only once the finally block has completed.
+        // console.log(`watchForHeaderRetract 5`);
+
+        const state: WholeStoreState = yield select();
+        // console.log(`watchForHeaderRetract 6 final state ${state.bars.header.retraction}, percentRevealed ${state.bars.header.percentRevealed}`);
+    }
 }
 
 
-export function setFooterRetraction(args: SetBarRetractionArgs & AnimatedArg): AppThunk {
-    return function(dispatch, getState) {
-        const { animated, retraction } = args;
+export function* watchForFooterRetract() {
+    // console.log(`watchForRetract 1`);
+    // takeLatest() seems more appropriate... And not sure about the while loop at all.
+    while (true){
+        const { type } = yield take([RETRACT_FOOTER, REVEAL_FOOTER]);
+        const oppositeType = type === "RETRACT_FOOTER" ? REVEAL_FOOTER : RETRACT_FOOTER;
+        const completedActionType = type === "RETRACT_FOOTER" ? FOOTER_RETRACTED : FOOTER_REVEALED;
+        // console.log(`watchForRetract 2`, type);
+        // Starts the task in the background ("'fork' effects are non-blocking").
+        const advanceFooterAnimationTask = yield fork(advanceBarAnimation.bind(null, type));
 
-        if(getState().bars.footer.retraction === retraction){
-            return Promise.resolve();
-        }
-
-        return animated ? 
-            dispatch(animateFooterRetraction(retraction)) :
-            dispatch(barsSlice.actions.setFooterRetraction(retraction));
-    };
-}
-
-export function animateBarsRetraction(args: SetBarsRetractionArgs & AnimatedArg): AppThunk {
-    return function(dispatch, getState) {
-        const { bars, animated, retraction } = args;
-        const dispatchArgs = { animated, retraction };
-
-        // console.log(`[animateBarsRetraction]`, payload);
-
-        // console.log(`[animateBarsRetraction] with bars ${bars} and retractionTarget ${retraction}`);
-
-        if(bars === "both"){
-            return Promise.all([
-                dispatch(animateHeaderRetraction(retraction)),
-                dispatch(animateFooterRetraction(retraction)),
-            ]);
-        } else {
-            return dispatch(
-                bars === "header" ?
-                    animateHeaderRetraction(retraction) :
-                    animateFooterRetraction(retraction)
-            );
-        }
-    };
-}
-
-export function animateHeaderRetraction(retractionTarget: RetractionTarget): AppThunk {
-    // console.log(`[animateHeaderRetraction] got into thunk`);
-
-    return function(dispatch, getState) {
-
-        // console.log(`[animateHeaderRetraction] with retractionTarget ${retractionTarget} and retraction ${getState().bars.header.retraction}`);
-
-        if(getState().bars.header.retraction === retractionTarget){
-            return Promise.resolve();
-        }
-
-        // I'll write this properly once I've installed Redux Saga
-        return new Promise((resolve, reject) => {
-            resolve(
-                dispatch(barsSlice.actions.setHeaderRetraction(
-                    retractionTarget === RetractionState.revealed ? RetractionState.revealing : RetractionState.retracting
-                ))
-            );
-        })
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceHeaderRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => dispatch(barsSlice.actions.setHeaderRetraction(retractionTarget)));
-    };
-}
-
-export function animateFooterRetraction(retractionTarget: RetractionTarget): AppThunk {
-    return function(dispatch, getState) {
-
-        if(getState().bars.footer.retraction === retractionTarget){
-            return Promise.resolve();
-        }
-
-        // I'll write this properly once I've installed Redux Saga
-        return new Promise((resolve, reject) => {
-            dispatch(barsSlice.actions.setFooterRetraction(
-                retractionTarget === RetractionState.revealed ? RetractionState.revealing : RetractionState.retracting
-            ));
-            resolve();
-        })
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(dispatch(advanceFooterRetractionKeyframe(retractionTarget))), 1/60);
-        }))
-        .then(() => dispatch(barsSlice.actions.setFooterRetraction(retractionTarget)));
-    };
-}
-
-export function advanceHeaderRetractionKeyframe(retractionTarget: RetractionTarget): AppThunk {
-    return function(dispatch, getState) {
-        const currentRetraction = getState().bars.header.retraction;
-
-        if(currentRetraction === retractionTarget){
-            return Promise.resolve();
-        }
-
-        return dispatch(barsSlice.actions.advanceHeaderRetraction(retractionTarget));
-    };
-}
-
-export function advanceFooterRetractionKeyframe(retractionTarget: RetractionTarget): AppThunk {
-    return function(dispatch, getState) {
-        const currentRetraction = getState().bars.footer.retraction;
-
-        if(currentRetraction === retractionTarget){
-            return Promise.resolve();
-        }
-
-        return dispatch(barsSlice.actions.advanceFooterRetraction(retractionTarget));
-    };
+        // console.log(`watchForRetract 3`);
+        /* Or: https://redux-saga.js.org/docs/advanced/RacingEffects.html */
+        // Wait for the animation to complete, or for the user to interrupt it
+        yield take([completedActionType, oppositeType]);
+        // console.log(`watchForRetract 4`);
+        // user clicked stop. cancel the background task
+        // this will cause the forked bgSync task to jump into its finally block
+        yield cancel(advanceFooterAnimationTask);
+        // Execution will reach this line only once the finally block has completed.
+        // console.log(`watchForRetract 5`);
+    }
 }

@@ -152,6 +152,7 @@ export class TabLocationView extends React.Component<Props & FlexboxLayoutCompon
         const retractedScale: number = 0;
         const scaleDiff: number = revealedScale - retractedScale;
         const animatedScale: number = (factor * scaleDiff) + retractedScale;
+        // console.log(`animatedScale`, animatedScale);
 
         const slotBackgroundColorObj: Color = new Color(slotBackgroundColor);
         
@@ -211,7 +212,7 @@ export const TabLocationViewConnected = connect(
         // console.log(`wholeStoreState`, wholeStoreState);
         return {
             retraction: wholeStoreState.bars.header.retraction,
-            percentRevealed: wholeStoreState.bars.footer.percentRevealed,
+            percentRevealed: wholeStoreState.bars.header.percentRevealed,
         };
     },
     {},
