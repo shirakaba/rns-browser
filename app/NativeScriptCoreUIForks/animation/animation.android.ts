@@ -1,6 +1,6 @@
 // Types.
 import { AnimationDefinitionInternal, AnimationPromise, PropertyAnimation } from "./animation-common";
-import { View } from "../core/view";
+import { View } from "@nativescript/core/ui/core/view";
 
 // Requires
 import { 
@@ -11,10 +11,10 @@ import {
     opacityProperty, backgroundColorProperty, rotateProperty,
     translateXProperty, translateYProperty, scaleXProperty, scaleYProperty,
     heightProperty, widthProperty, PercentLength
-} from "../styling/style-properties";
-import { layout } from "../../utils/utils";
-import { device, screen } from "../../platform";
-import lazy from "../../utils/lazy";
+} from "@nativescript/core/ui/styling/style-properties";
+import { layout } from "@nativescript/core/ui/../utils/utils";
+import { device, screen } from "@nativescript/core/ui/../platform";
+import lazy from "@nativescript/core/ui/../utils/lazy";
 
 export * from "./animation-common";
 
@@ -228,7 +228,7 @@ export class Animation extends AnimationBase {
         this._resolveAnimationFinishedPromise();
 
         if (this._resetOnFinish && this._target) {
-            this._target._removeAnimation(this);
+            (this._target as any)._removeAnimation(this);
         }
     }
 
@@ -237,7 +237,7 @@ export class Animation extends AnimationBase {
         this._rejectAnimationFinishedPromise();
 
         if (this._target) {
-            this._target._removeAnimation(this);
+            (this._target as any)._removeAnimation(this);
         }
     }
 

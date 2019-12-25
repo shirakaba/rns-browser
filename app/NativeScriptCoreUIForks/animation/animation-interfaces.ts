@@ -1,7 +1,7 @@
 // Types
-import { View } from "../core/view";
-import { PercentLength } from "../styling/style-properties";
-import { Color } from "../../color";
+import { View } from "@nativescript/core/ui/core/view";
+import { PercentLength } from "@nativescript/core/ui/styling/style-properties";
+import { Color } from "@nativescript/core/ui/../color";
 
 export type Transformation = {
     property: TransformationType;

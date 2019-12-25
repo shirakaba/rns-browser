@@ -3,7 +3,7 @@ import {
     AnimationDefinitionInternal, AnimationPromise, IOSView,
     PropertyAnimation, PropertyAnimationInfo
 } from "./animation-common";
-import { View } from "../core/view";
+import { View } from "@nativescript/core/ui/core/view";
 
 // Requires
 import { 
@@ -14,9 +14,9 @@ import {
     opacityProperty, backgroundColorProperty, rotateProperty,
     translateXProperty, translateYProperty, scaleXProperty, scaleYProperty,
     heightProperty, widthProperty, PercentLength
-} from "../styling/style-properties";
+} from "@nativescript/core/ui/styling/style-properties";
 
-import { screen } from "../../platform";
+import { screen } from "@nativescript/core/ui/../platform";
 
 export * from "./animation-common";
 

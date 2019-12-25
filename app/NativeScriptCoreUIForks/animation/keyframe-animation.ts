@@ -8,14 +8,14 @@ import {
     KeyframeAnimation as KeyframeAnimationDefinition,
 } from "./keyframe-animation";
 
-import { View, Color } from "../core/view";
+import { View, Color } from "@nativescript/core/ui/core/view";
 
-import { AnimationCurve } from "../enums";
+import { AnimationCurve } from "@nativescript/core/ui/enums";
 
-import { write as traceWrite, categories as traceCategories, messageType as traceType } from "../../trace";
+import { write as traceWrite, categories as traceCategories, messageType as traceType } from "@nativescript/core/ui/../trace";
 
 // Types.
-import { unsetValue } from "../core/properties";
+import { unsetValue } from "@nativescript/core/ui/core/properties";
 import { Animation } from "./animation";
 import {
     backgroundColorProperty,
@@ -23,7 +23,7 @@ import {
     translateXProperty, translateYProperty,
     rotateProperty, opacityProperty,
     widthProperty, heightProperty, PercentLength
-} from "../styling/style-properties";
+} from "@nativescript/core/ui/styling/style-properties";
 
 export class Keyframes implements KeyframesDefinition {
     name: string;

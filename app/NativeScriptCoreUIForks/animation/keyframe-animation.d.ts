@@ -2,7 +2,7 @@
  * @module "ui/animation/keyframe-animation"
  */ /** */
 
-import { View } from "../core/view";
+import { View } from "@nativescript/core/ui/core/view";
 
 export declare const ANIMATION_PROPERTIES;
 

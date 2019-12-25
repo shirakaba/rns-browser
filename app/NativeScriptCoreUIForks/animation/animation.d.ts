@@ -2,8 +2,8 @@
  * @module "ui/animation"
  */ /** */
 
-import { View, Color } from "../core/view";
-import { PercentLength } from "../styling/style-properties";
+import { View, Color } from "@nativescript/core/ui/core/view";
+import { PercentLength } from "@nativescript/core/ui/styling/style-properties";
 
 /**
  * Defines animation options for the View.animate method.

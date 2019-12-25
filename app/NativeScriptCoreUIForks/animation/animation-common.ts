@@ -9,12 +9,12 @@ import {
 } from "./animation-interfaces";
 
 // Requires.
-import { Color } from "../../color";
+import { Color } from "@nativescript/core/ui/../color";
 import { 
     isEnabled as traceEnabled, write as traceWrite, 
     categories as traceCategories, messageType as traceType 
-} from "../../trace";
-import { PercentLength } from "../styling/style-properties";
+} from "@nativescript/core/ui/../trace";
+import { PercentLength } from "@nativescript/core/ui/styling/style-properties";
 
 export { Color, traceEnabled, traceWrite, traceCategories, traceType };
 export * from "./animation-interfaces";
